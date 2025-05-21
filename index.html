@@ -1,0 +1,574 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QTechKnow Quest 2025 Quizbee Leaderboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2980b9;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #2c3e50;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f5f5f5;
+      color: var(--dark-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .tab-button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .tab-button.active {
+      background-color: var(--secondary-color);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    #addTeam, #addTeamBtn {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    #resetScores {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    #addPoints {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    #subtractPoints {
+      background-color: var(--warning-color);
+      color: white;
+    }
+
+    .scoreboard-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      overflow-x: auto;
+      margin-bottom: 30px;
+    }
+
+    
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1.1em;
+    }
+
+    th, td {
+      padding: 20px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+   #manageTab th:nth-child(2),
+   #manageTab td:nth-child(2) {
+  	text-align: center;
+   }
+
+   #displayTab th:nth-child(2),
+   #displayTab td:nth-child(2) {
+   text-align: center;
+   }
+
+   #manageTab th:nth-child(1),
+   #manageTab td:nth-child(1) {
+  	text-align: center;
+   }
+
+   #displayTab th:nth-child(1),
+   #displayTab td:nth-child(1) {
+   	text-align: center;
+   }
+
+   #manageTab th:nth-child(3),
+   #manageTab td:nth-child(3) {
+  	text-align: center;
+   }
+
+   #displayTab th:nth-child(3),
+   #displayTab td:nth-child(3) {
+   	text-align: center;
+   }
+
+    th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .rank {
+      font-weight: bold;
+      color: var(--primary-color);
+      width: 80px;
+    }
+
+    .score {
+      font-weight: bold;
+      font-size: 1.2em;
+      width: 100px;
+    }
+
+    .category {
+      width: 120px;
+    }
+
+    .editable {
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 3px;
+    }
+
+    .editable:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .editable-input {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    .category-select {
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      font-family: inherit;
+      font-size: inherit;
+      cursor: pointer;
+    }
+
+    .action-panel {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .score-controls, .point-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      flex-grow: 1;
+      min-width: 150px;
+    }
+
+    .team-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .team-actions button {
+      padding: 5px 10px;
+      font-size: 0.8em;
+    }
+
+    .selected {
+      background-color: rgba(52, 152, 219, 0.1) !important;
+    }
+
+    .display-only {
+      font-size: 1.8em;
+    }
+
+    @media (max-width: 768px) {
+      th, td {
+        padding: 10px 5px;
+      }
+
+      .team-actions {
+        flex-direction: column;
+      }
+    }
+
+    .gold {
+      background-color: #ffd700 !important; /* Gold */
+      font-weight: bold;
+      color: #000;
+    }
+
+    .silver {
+      background-color: #c0c0c0 !important; /* Silver */
+      font-weight: bold;
+      color: #000;
+    }
+
+    .bronze {
+      background-color: #cd7f32 !important; /* Bronze */
+      font-weight: bold;
+      color: #000;
+    }
+    
+    /* New styles for display mode footer */
+    .display-footer {
+      text-align: center;
+      margin-top: 20px;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>TechKnow Quest 2025 Quizbee Leaderboard: Final Round</h1>
+      <div class="controls" id="manageControls">
+        <button id="addTeam">Add Quizzer</button>
+        <button id="resetScores">Reset All Scores</button>
+      </div>
+    </header>
+
+    <div class="scoreboard-container" id="manageTab">
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Quizzer Name</th>
+            <th>Category</th>
+            <th>Score</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="scoreboard-body"></tbody>
+      </table>
+    </div>
+
+    <div class="scoreboard-container" id="displayTab" style="display:none;">
+      <table class="display-only">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Quizzer Name</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="display-body"></tbody>
+      </table>
+      <!-- Moved tabs to here for display mode -->
+      <div class="display-footer">
+        <div class="tabs">
+          <button class="tab-button" data-tab="manage">Edit Mode</button>
+          <button class="tab-button active" data-tab="display">Display Mode</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-panel" id="manageControlsPanel">
+      <div class="score-controls">
+        <input type="text" id="teamNameInput" placeholder="Enter quizzer name" />
+        <select id="categoryInput">
+          <option value="NA">NA</option>
+          <option value="MO">MO</option>
+          <option value="IQS">IQS</option>
+          <option value="Senior">Senior</option>
+        </select>
+        <button id="addTeamBtn">Add Quizzer</button>
+      </div>
+      <div class="point-controls">
+        <input type="number" id="pointsInput" placeholder="Points to add/subtract" value="10" />
+        <button id="addPoints">Add Points</button>
+        <button id="subtractPoints">Subtract Points</button>
+      </div>
+    </div>
+    
+    <!-- Original tabs (for edit mode) -->
+    <div class="tabs">
+      <button class="tab-button active" data-tab="manage">Edit Mode</button>
+      <button class="tab-button" data-tab="display">Display Mode</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const teams = [
+        { name: "Quizzer A", category: "NA", score: 0 },
+        { name: "Quizzer B", category: "NA", score: 0 },
+        { name: "Quizzer C", category: "NA", score: 0 }
+      ];
+
+      let selectedTeam = null;
+      let currentlyEditing = null;
+
+      const scoreboardBody = document.getElementById('scoreboard-body');
+      const displayBody = document.getElementById('display-body');
+      const teamNameInput = document.getElementById('teamNameInput');
+      const categoryInput = document.getElementById('categoryInput');
+      const pointsInput = document.getElementById('pointsInput');
+
+      function calculateRanks() {
+        // First, sort teams by score in descending order
+        teams.sort((a, b) => b.score - a.score);
+        
+        // Then calculate ranks with ties
+        if (teams.length === 0) return;
+        
+        let currentRank = 1;
+        teams[0].rank = currentRank;
+        
+        for (let i = 1; i < teams.length; i++) {
+          if (teams[i].score === teams[i-1].score) {
+            // Same score as previous, same rank
+            teams[i].rank = currentRank;
+          } else {
+            // Different score, increment rank by position
+            currentRank = i + 1;
+            teams[i].rank = currentRank;
+          }
+        }
+      }
+
+      function renderScoreboard() {
+        calculateRanks();
+        scoreboardBody.innerHTML = '';
+        displayBody.innerHTML = '';
+
+        teams.forEach((team, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="rank">${team.rank}</td>
+            <td><span class="editable team-name" data-index="${index}">${team.name}</span></td>
+            <td class="category">
+              <select class="category-select" data-index="${index}">
+                <option value="NA" ${team.category === 'NA' ? 'selected' : ''}>NA</option>
+                <option value="MO" ${team.category === 'MO' ? 'selected' : ''}>MO</option>
+                <option value="IQS" ${team.category === 'IQS' ? 'selected' : ''}>IQS</option>
+                <option value="Senior" ${team.category === 'Senior' ? 'selected' : ''}>Senior</option>
+              </select>
+            </td>
+            <td class="score"><span class="editable team-score" data-index="${index}">${team.score}</span></td>
+            <td class="team-actions">
+              <button class="select-btn" data-index="${index}">${selectedTeam === index ? 'Selected' : 'Select'}</button>
+              <button class="remove-btn" data-index="${index}">Remove</button>
+            </td>
+          `;
+          scoreboardBody.appendChild(row);
+
+          const displayRow = document.createElement('tr');
+          // Apply medal colors based on rank (1-3)
+          if (team.rank === 1) displayRow.classList.add('gold');
+          else if (team.rank === 2) displayRow.classList.add('silver');
+          else if (team.rank === 3) displayRow.classList.add('bronze');
+
+          displayRow.innerHTML = `
+            <td>${team.rank}</td>
+            <td>${team.name}</td>
+            <td>${team.score}</td>
+          `;
+          displayBody.appendChild(displayRow);
+        });
+
+        document.querySelectorAll('.select-btn').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const index = parseInt(this.getAttribute('data-index'));
+            selectedTeam = selectedTeam === index ? null : index;
+            renderScoreboard();
+          });
+        });
+
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const index = parseInt(this.getAttribute('data-index'));
+            teams.splice(index, 1);
+            if (selectedTeam === index) selectedTeam = null;
+            else if (selectedTeam > index) selectedTeam -= 1;
+            renderScoreboard();
+          });
+        });
+
+        document.querySelectorAll('.category-select').forEach(select => {
+          select.addEventListener('change', function() {
+            const index = parseInt(this.getAttribute('data-index'));
+            teams[index].category = this.value;
+          });
+        });
+
+        document.querySelectorAll('.editable').forEach(editable => {
+          editable.addEventListener('click', function () {
+            if (currentlyEditing) return;
+
+            const index = parseInt(this.getAttribute('data-index'));
+            const isScore = this.classList.contains('team-score');
+            const currentValue = isScore ? teams[index].score : teams[index].name;
+
+            const input = document.createElement('input');
+            input.type = isScore ? 'number' : 'text';
+            input.className = 'editable-input';
+            input.value = currentValue;
+
+            this.innerHTML = '';
+            this.appendChild(input);
+            input.focus();
+
+            currentlyEditing = { element: this, index, isScore, originalValue: currentValue };
+
+            const finishEditing = () => {
+              if (!currentlyEditing) return;
+              const newValue = isScore ? parseInt(input.value) || 0 : input.value.trim();
+              if (isScore) teams[index].score = newValue;
+              else teams[index].name = newValue || teams[index].name;
+
+              currentlyEditing = null;
+              renderScoreboard();
+            };
+
+            input.addEventListener('blur', finishEditing);
+            input.addEventListener('keypress', e => {
+              if (e.key === 'Enter') finishEditing();
+            });
+          });
+        });
+      }
+
+      document.getElementById('addTeamBtn').addEventListener('click', () => {
+        const name = teamNameInput.value.trim();
+        const category = categoryInput.value;
+        if (name) {
+          teams.push({ name, category, score: 0 });
+          teamNameInput.value = '';
+          renderScoreboard();
+        } else alert('Please enter a quizzer name');
+      });
+
+      document.getElementById('addTeam').addEventListener('click', () => teamNameInput.focus());
+
+      document.getElementById('addPoints').addEventListener('click', () => {
+        if (selectedTeam !== null) {
+          const points = parseInt(pointsInput.value) || 0;
+          teams[selectedTeam].score += points;
+          renderScoreboard();
+        } else alert('Select a team first');
+      });
+
+      document.getElementById('subtractPoints').addEventListener('click', () => {
+        if (selectedTeam !== null) {
+          const points = parseInt(pointsInput.value) || 0;
+          teams[selectedTeam].score = Math.max(0, teams[selectedTeam].score - points);
+          renderScoreboard();
+        } else alert('Select a team first');
+      });
+
+      document.getElementById('resetScores').addEventListener('click', () => {
+        if (confirm('Reset all scores to 0?')) {
+          teams.forEach(team => team.score = 0);
+          renderScoreboard();
+        }
+      });
+
+      function switchTab(tab) {
+        // Update all tab buttons
+        document.querySelectorAll('.tab-button').forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
+        });
+        
+        // Toggle visibility of tabs
+        document.getElementById('manageTab').style.display = tab === 'manage' ? 'block' : 'none';
+        document.getElementById('displayTab').style.display = tab === 'display' ? 'block' : 'none';
+        document.getElementById('manageControls').style.display = tab === 'manage' ? 'flex' : 'none';
+        document.getElementById('manageControlsPanel').style.display = tab === 'manage' ? 'block' : 'none';
+        
+        // Hide the original tabs in display mode
+        document.querySelector('.container > .tabs').style.display = tab === 'manage' ? 'flex' : 'none';
+      }
+
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.getAttribute('data-tab');
+          switchTab(tab);
+        });
+      });
+
+      renderScoreboard();
+    });
+  </script>
+</body>
+</html>
