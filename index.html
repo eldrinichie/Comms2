@@ -1,574 +1,466 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>QTechKnow Quest 2025 Quizbee Leaderboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --primary-color: #3498db;
-      --secondary-color: #2980b9;
-      --accent-color: #e74c3c;
-      --light-color: #ecf0f1;
-      --dark-color: #2c3e50;
-      --success-color: #2ecc71;
-      --warning-color: #f39c12;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Montserrat', sans-serif;
-      background-color: #f5f5f5;
-      color: var(--dark-color);
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 1800px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .tabs {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-    }
-
-    .tab-button {
-      padding: 10px 20px;
-      margin: 0 5px;
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
-
-    .tab-button.active {
-      background-color: var(--secondary-color);
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding: 20px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    header h1 {
-      color: var(--primary-color);
-      margin-bottom: 15px;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 15px;
-    }
-
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-    }
-
-    #addTeam, #addTeamBtn {
-      background-color: var(--success-color);
-      color: white;
-    }
-
-    #resetScores {
-      background-color: var(--accent-color);
-      color: white;
-    }
-
-    #addPoints {
-      background-color: var(--primary-color);
-      color: white;
-    }
-
-    #subtractPoints {
-      background-color: var(--warning-color);
-      color: white;
-    }
-
-    .scoreboard-container {
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      overflow-x: auto;
-      margin-bottom: 30px;
-    }
-
-    
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 1.1em;
-    }
-
-    th, td {
-      padding: 20px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    
-   #manageTab th:nth-child(2),
-   #manageTab td:nth-child(2) {
-  	text-align: center;
-   }
-
-   #displayTab th:nth-child(2),
-   #displayTab td:nth-child(2) {
-   text-align: center;
-   }
-
-   #manageTab th:nth-child(1),
-   #manageTab td:nth-child(1) {
-  	text-align: center;
-   }
-
-   #displayTab th:nth-child(1),
-   #displayTab td:nth-child(1) {
-   	text-align: center;
-   }
-
-   #manageTab th:nth-child(3),
-   #manageTab td:nth-child(3) {
-  	text-align: center;
-   }
-
-   #displayTab th:nth-child(3),
-   #displayTab td:nth-child(3) {
-   	text-align: center;
-   }
-
-    th {
-      background-color: var(--primary-color);
-      color: white;
-      font-weight: bold;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-
-    tr:hover {
-      background-color: #f1f1f1;
-    }
-
-    .rank {
-      font-weight: bold;
-      color: var(--primary-color);
-      width: 80px;
-    }
-
-    .score {
-      font-weight: bold;
-      font-size: 1.2em;
-      width: 100px;
-    }
-
-    .category {
-      width: 120px;
-    }
-
-    .editable {
-      cursor: pointer;
-      padding: 5px;
-      border-radius: 3px;
-    }
-
-    .editable:hover {
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-
-    .editable-input {
-      width: 100%;
-      padding: 5px;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      font-family: inherit;
-      font-size: inherit;
-    }
-
-    .category-select {
-      padding: 5px;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      font-family: inherit;
-      font-size: inherit;
-      cursor: pointer;
-    }
-
-    .action-panel {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .score-controls, .point-controls {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
-    }
-
-    input, select {
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      flex-grow: 1;
-      min-width: 150px;
-    }
-
-    .team-actions {
-      display: flex;
-      gap: 5px;
-    }
-
-    .team-actions button {
-      padding: 5px 10px;
-      font-size: 0.8em;
-    }
-
-    .selected {
-      background-color: rgba(52, 152, 219, 0.1) !important;
-    }
-
-    .display-only {
-      font-size: 1.8em;
-    }
-
-    @media (max-width: 768px) {
-      th, td {
-        padding: 10px 5px;
-      }
-
-      .team-actions {
-        flex-direction: column;
-      }
-    }
-
-    .gold {
-      background-color: #ffd700 !important; /* Gold */
-      font-weight: bold;
-      color: #000;
-    }
-
-    .silver {
-      background-color: #c0c0c0 !important; /* Silver */
-      font-weight: bold;
-      color: #000;
-    }
-
-    .bronze {
-      background-color: #cd7f32 !important; /* Bronze */
-      font-weight: bold;
-      color: #000;
-    }
-    
-    /* New styles for display mode footer */
-    .display-footer {
-      text-align: center;
-      margin-top: 20px;
-      padding: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Telecom Multiplexing Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .option-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .correct {
+            background-color: #10B981 !important;
+            color: white !important;
+            border-color: #059669 !important;
+        }
+        .incorrect {
+            background-color: #EF4444 !important;
+            color: white !important;
+            border-color: #DC2626 !important;
+        }
+        .tab-active {
+            border-color: #3B82F6;
+            background-color: #3B82F6;
+            color: white;
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <header>
-      <h1>TechKnow Quest 2025 Quizbee Leaderboard: Final Round</h1>
-      <div class="controls" id="manageControls">
-        <button id="addTeam">Add Quizzer</button>
-        <button id="resetScores">Reset All Scores</button>
-      </div>
-    </header>
+<body class="bg-gray-100">
 
-    <div class="scoreboard-container" id="manageTab">
-      <table>
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Quizzer Name</th>
-            <th>Category</th>
-            <th>Score</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="scoreboard-body"></tbody>
-      </table>
-    </div>
+    <div class="quiz-container">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Comms 2 Quiz</h1>
+        <p class="text-center text-gray-500 mb-6">Test your knowledge on multiplexing and T-carrier systems.</p>
 
-    <div class="scoreboard-container" id="displayTab" style="display:none;">
-      <table class="display-only">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Quizzer Name</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody id="display-body"></tbody>
-      </table>
-      <!-- Moved tabs to here for display mode -->
-      <div class="display-footer">
-        <div class="tabs">
-          <button class="tab-button" data-tab="manage">Edit Mode</button>
-          <button class="tab-button active" data-tab="display">Display Mode</button>
+        <!-- Tab Navigation -->
+        <div class="flex justify-center border-b mb-6">
+            <button id="mcq-tab" class="py-2 px-6 font-semibold text-gray-600 border-b-2 tab-active">Multiple Choice</button>
+            <button id="tf-tab" class="py-2 px-6 font-semibold text-gray-600 border-b-2">True or False</button>
         </div>
-      </div>
+
+        <!-- Quiz Content Area -->
+        <div id="quiz-area">
+            <!-- Dynamic Content will be injected here -->
+        </div>
+
+        <!-- Multiple Choice Template (Hidden) -->
+        <template id="mcq-template">
+            <div>
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-lg font-semibold text-gray-700">Question <span id="mcq-question-number"></span>/<span id="mcq-total-questions"></span></p>
+                    <p class="text-lg font-bold text-blue-600">Score: <span id="mcq-score">0</span></p>
+                </div>
+                <div id="mcq-question-container" class="mb-5">
+                    <p class="text-xl font-medium text-gray-900" id="mcq-question-text"></p>
+                </div>
+                <div id="mcq-options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Options will be here -->
+                </div>
+                <div id="mcq-feedback" class="mt-4 p-4 rounded-lg bg-gray-50 text-gray-700" style="display: none;"></div>
+                <div class="mt-6 text-center">
+                    <button id="mcq-next-btn" class="bg-blue-600 text-white font-bold py-2 px-8 rounded-lg hover:bg-blue-700 transition-colors" style="display:none;">Next</button>
+                </div>
+            </div>
+            <div id="mcq-results-container" class="text-center" style="display: none;">
+                 <h2 class="text-2xl font-bold mb-4">Quiz Complete!</h2>
+                 <p class="text-xl mb-6">Your Final Score: <span id="mcq-final-score" class="font-bold text-blue-600"></span></p>
+                 <button id="mcq-restart-btn" class="bg-green-500 text-white font-bold py-3 px-10 rounded-lg hover:bg-green-600 transition-colors">Restart Quiz</button>
+            </div>
+        </template>
+
+        <!-- True/False Template (Hidden) -->
+        <template id="tf-template">
+             <div>
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-lg font-semibold text-gray-700">Question <span id="tf-question-number"></span>/<span id="tf-total-questions"></span></p>
+                    <p class="text-lg font-bold text-blue-600">Score: <span id="tf-score">0</span></p>
+                </div>
+                <div id="tf-question-container" class="mb-5 p-4 bg-blue-50 border-l-4 border-blue-400">
+                    <p class="text-xl font-medium text-gray-900" id="tf-question-text"></p>
+                </div>
+                <div id="tf-options-container" class="flex justify-center gap-4">
+                    <button data-answer="True" class="tf-option-btn bg-green-500 text-white font-bold py-2 px-10 rounded-lg hover:bg-green-600 transition-colors">True</button>
+                    <button data-answer="False" class="tf-option-btn bg-red-500 text-white font-bold py-2 px-10 rounded-lg hover:bg-red-600 transition-colors">False</button>
+                </div>
+                <div id="tf-feedback" class="mt-4 p-4 rounded-lg bg-gray-50" style="display: none;"></div>
+                <div class="mt-6 text-center">
+                    <button id="tf-next-btn" class="bg-blue-600 text-white font-bold py-2 px-8 rounded-lg hover:bg-blue-700 transition-colors" style="display:none;">Next</button>
+                </div>
+            </div>
+            <div id="tf-results-container" class="text-center" style="display: none;">
+                 <h2 class="text-2xl font-bold mb-4">Quiz Complete!</h2>
+                 <p class="text-xl mb-6">Your Final Score: <span id="tf-final-score" class="font-bold text-blue-600"></span></p>
+                 <button id="tf-restart-btn" class="bg-green-500 text-white font-bold py-3 px-10 rounded-lg hover:bg-green-600 transition-colors">Restart Quiz</button>
+            </div>
+        </template>
     </div>
 
-    <div class="action-panel" id="manageControlsPanel">
-      <div class="score-controls">
-        <input type="text" id="teamNameInput" placeholder="Enter quizzer name" />
-        <select id="categoryInput">
-          <option value="NA">NA</option>
-          <option value="MO">MO</option>
-          <option value="IQS">IQS</option>
-          <option value="Senior">Senior</option>
-        </select>
-        <button id="addTeamBtn">Add Quizzer</button>
-      </div>
-      <div class="point-controls">
-        <input type="number" id="pointsInput" placeholder="Points to add/subtract" value="10" />
-        <button id="addPoints">Add Points</button>
-        <button id="subtractPoints">Subtract Points</button>
-      </div>
-    </div>
-    
-    <!-- Original tabs (for edit mode) -->
-    <div class="tabs">
-      <button class="tab-button active" data-tab="manage">Edit Mode</button>
-      <button class="tab-button" data-tab="display">Display Mode</button>
-    </div>
-  </div>
+    <script>
+        // --- DATA ---
+        const mcqQuestions = [
+            { question: "What is the primary purpose of multiplexing?", options: ["To reduce the number of bits per signal", "To allow multiple signals to share one medium", "To increase signal voltage", "To convert analog signals into digital"], answer: "B", explanation: "Multiplexing enables multiple signals to be transmitted over a single communication channel, optimizing bandwidth." },
+            { question: "In Time-Division Multiplexing (TDM), how are signals separated?", options: ["By amplitude", "By wavelength", "By time slots", "By voltage level"], answer: "C", explanation: "TDM assigns each signal a unique time slot in a repeating frame, so no overlap occurs during transmission." },
+            { question: "Why is synchronization important in TDM systems?", options: ["To match signal voltages", "To decode color signals", "To ensure time slots are correctly interpreted", "To boost signal strength"], answer: "C", explanation: "Without synchronization, the receiver can’t determine where each time slot begins and ends, causing data errors." },
+            { question: "What type of multiplexing uses different frequencies for each channel?", options: ["TDM", "FDM", "WDM", "CDMA"], answer: "B", explanation: "Frequency-Division Multiplexing (FDM) assigns unique frequency bands to each signal." },
+            { question: "Which of the following is most suitable for optical fiber systems?", options: ["TDM", "WDM", "FDM", "PCM"], answer: "B", explanation: "Wavelength-Division Multiplexing (WDM) uses different light wavelengths, making it ideal for optical networks." },
+            { question: "What is the data rate of a standard T1 carrier system?", options: ["2.048 Mbps", "44.736 Mbps", "1.544 Mbps", "64 kbps"], answer: "C", explanation: "T1 carries 24 channels at 64 kbps each, totaling 1.544 Mbps." },
+            { question: "What function does a D-type channel bank serve in a T1 system?", options: ["Boosts signal strength", "Adds error correction", "Converts analog to digital", "Compresses data"], answer: "C", explanation: "Channel banks digitize analog voice signals and format them for T1 transmission." },
+            { question: "What is the purpose of framing bits in TDM?", options: ["Add redundancy", "Compress the signal", "Indicate the start of a frame", "Control the duty cycle"], answer: "C", explanation: "Framing bits help the receiver identify the start and end of a TDM frame for proper synchronization." },
+            { question: "Which framing format combines 12 T1 frames?", options: ["ESF", "Superframe", "Hyperframe", "Basic frame"], answer: "B", explanation: "A superframe is composed of 12 frames, used for synchronization and signaling." },
+            { question: "What is “robbed-bit signaling” used for in T1 systems?", options: ["Framing synchronization", "Error correction", "Embedding signaling bits into voice channels", "Encrypting the signal"], answer: "C", explanation: "Robbed-bit signaling inserts signaling info into the least significant bits of certain voice frames." },
+            { question: "Which line encoding method ensures clock recovery by always having a transition?", options: ["NRZ", "B8ZS", "Manchester", "Gray code"], answer: "C", explanation: "Manchester encoding guarantees at least one transition per bit, making clock recovery easier." },
+            { question: "What problem does B8ZS solve in T1 systems?", options: ["Crosstalk", "Bandwidth overload", "Long strings of zeros", "Excessive noise"], answer: "C", explanation: "B8ZS substitutes long sequences of 0s with intentional code violations to maintain synchronization." },
+            { question: "What is the bit rate of a T3 system?", options: ["1.544 Mbps", "6.312 Mbps", "44.736 Mbps", "2.048 Mbps"], answer: "C", explanation: "T3 systems support 672 channels with a data rate of 44.736 Mbps." },
+            { question: "What is a supergroup in multiplexing?", options: ["A large error correction group", "A group of fiber cores", "A combination of 5 basic groups", "A high-frequency amplifier"], answer: "C", explanation: "A supergroup contains 5 basic groups, totaling 60 voice channels." },
+            { question: "What is the purpose of a regenerative repeater?", options: ["Filters analog noise", "Encrypts the signal", "Reconstructs and amplifies digital signals", "Shifts signal frequency"], answer: "C", explanation: "Regenerative repeaters reshape and boost digital signals to prevent degradation over long distances." },
+            { question: "In WDM, what defines each channel?", options: ["Frequency in MHz", "Voltage level", "Phase angle", "Wavelength in nanometers"], answer: "D", explanation: "In WDM systems, each signal is assigned a distinct wavelength (e.g., 1550 nm) for optical transmission." },
+            { question: "What does the term “combo chip” refer to?", options: ["Dual-core CPU", "Signal booster", "Integrated chip with codec and framing functions", "A switch with dual ports"], answer: "C", explanation: "Combo chips integrate multiple telecom functions like encoding, decoding, and signal processing." },
+            { question: "Which method of framing adds signaling bits within user data?", options: ["Added-channel", "Added-digit", "Robbed-digit", "Statistical"], answer: "C", explanation: "Robbed-digit framing borrows bits from user data to insert signaling information." },
+            { question: "What is “ones density” important for in digital signals?", options: ["Enhancing brightness", "Clock recovery", "Increasing bit rate", "Controlling voltage"], answer: "B", explanation: "A minimum number of 1s is required to maintain timing and ensure reliable data recovery." },
+            { question: "Why is B8ZS considered a bipolar violation?", options: ["It removes 1s from the signal", "It uses voltage polarity errors to mark data", "It adds extra 0s", "It compresses signals"], answer: "B", explanation: "B8ZS deliberately introduces bipolar violations (unexpected polarities) to flag long runs of 0s." },
+            { question: "What is the typical channel rate in T1?", options: ["1.544 Mbps", "64 kbps", "2.048 Mbps", "56 kbps"], answer: "B", explanation: "Each of the 24 channels in a T1 line transmits at 64 kbps." },
+            { question: "What is the function of a demultiplexer?", options: ["Combine signals", "Separate a signal into multiple outputs", "Compress data", "Generate carrier frequencies"], answer: "B", explanation: "A demultiplexer extracts individual channels from a combined multiplexed signal." },
+            { question: "What role do wavelength routers play in WDM?", options: ["Switch RF signals", "Encrypt data", "Route optical channels based on wavelength", "Convert analog to digital"], answer: "C", explanation: "Wavelength routers direct optical signals to different outputs based on their wavelengths." },
+            { question: "What is the benefit of DWDM over basic WDM?", options: ["Lower cost", "Better voltage control", "Higher channel density", "Faster analog conversion"], answer: "C", explanation: "Dense Wavelength Division Multiplexing packs more wavelengths into the same fiber, increasing capacity." },
+            { question: "In multiplexing, what does a “group” typically consist of?", options: ["24 channels", "12 voice channels", "60 data bits", "4 superframes"], answer: "B", explanation: "A basic group in FDM typically contains 12 voice channels combined into one composite signal." },
+            { question: "What is a DS-0 channel primarily used for?", options: ["High-speed internet", "Voice transmission", "Satellite communications", "Optical routing"], answer: "B", explanation: "DS-0 is the basic digital signaling rate of 64 kbps, typically used for a single voice channel." },
+            { question: "How many voice channels are in a T1 line?", options: ["12", "24", "48", "96"], answer: "B", explanation: "T1 lines multiplex 24 DS-0 (64 kbps) channels, each usually carrying one voice call." },
+            { question: "What is a multiplexer’s main function?", options: ["Amplify signals", "Encode voice signals", "Combine multiple inputs into one output", "Switch channels"], answer: "C", explanation: "A multiplexer combines several input signals into a single output signal using TDM, FDM, or WDM." },
+            { question: "In a PCM-TDM system, what does a framing bit do?", options: ["Adds redundancy", "Defines sampling rate", "Helps receiver align to frame boundaries", "Compresses voice"], answer: "C", explanation: "The framing bit helps the receiver determine the start of a new frame and maintain synchronization." },
+            { question: "How many bits are typically in one T1 frame?", options: ["192", "193", "194", "200"], answer: "B", explanation: "A T1 frame contains 24 channels × 8 bits (192 bits) plus 1 framing bit, totaling 193 bits." },
+            { question: "What is the purpose of the A-bit in T1 systems?", options: ["Indicates frame start", "Carries data", "Used for signaling", "Synchronizes codec"], answer: "C", explanation: "The A-bit is part of the multi-frame signaling system in T1 lines and carries supervisory signaling data." },
+            { question: "What is the minimum sample rate for a 4 kHz voice channel per Nyquist theorem?", options: ["8 kHz", "4 kHz", "2 kHz", "6.5 kHz"], answer: "A", explanation: "According to Nyquist, the sampling rate must be at least twice the maximum frequency (2 × 4 kHz = 8 kHz)." },
+            { question: "How many frames make up a Superframe (SF)?", options: ["12", "24", "8", "32"], answer: "A", explanation: "A Superframe (SF) groups 12 T1 frames and includes signaling and framing patterns." },
+            { question: "How many bits are in an Extended Superframe (ESF)?", options: ["192", "193", "2316", "4632"], answer: "D", explanation: "ESF = 24 frames × 193 bits = 4632 bits total." },
+            { question: "What does DS-1 represent?", options: ["A digital multiplexer", "A single voice channel", "A framing bit", "A 1.544 Mbps digital signal format"], answer: "D", explanation: "DS-1 corresponds to the T1 carrier with 24 channels and a total rate of 1.544 Mbps." },
+            { question: "In fixed-data-rate mode, how is bandwidth allocated?", options: ["Dynamically based on traffic", "Based on user priority", "Equally, regardless of use", "Randomly"], answer: "C", explanation: "Fixed-data-rate mode assigns a dedicated rate to each channel regardless of activity." },
+            { question: "Which of the following uses intentional bipolar violations to maintain synchronization?", options: ["NRZ", "AMI", "B8ZS", "PPM"], answer: "C", explanation: "B8ZS inserts bipolar violations in long sequences of 0s to ensure signal transitions." },
+            { question: "What does BPRZ-AMI stand for?", options: ["Binary Pulse Return to Zero, Alternate Mark Inversion", "Balanced Pulse Repeating Zero-Amplified Modulated Input", "Bit Phase Regulated Zone-Amplitude Multiplexing", "Binary Phase Root-Zero AMI"], answer: "A", explanation: "BPRZ-AMI is a line encoding scheme combining Return to Zero format with AMI rules." },
+            { question: "What distinguishes a combo chip in telecom hardware?", options: ["It’s an analog-only amplifier", "Combines codec, framing, and timing functions", "Contains routing tables", "Reduces error rate by 50%"], answer: "B", explanation: "A combo chip integrates several digital communication functions into one IC package." },
+            { question: "Which encoding scheme represents 1s with alternating polarity and 0s with zero voltage?", options: ["NRZ", "BPRZ", "AMI", "FSK"], answer: "C", explanation: "AMI (Alternate Mark Inversion) encodes logical 1s using alternating + and - voltages, and 0s as 0 volts." },
+            { question: "What is the framing format used in ESF?", options: ["1-bit repeating", "8-bit sync", "24-bit cyclic pattern", "193-bit scrambled"], answer: "C", explanation: "The ESF uses a 24-bit framing pattern that provides better error checking and maintenance signaling." },
+            { question: "What is the minimum line speed required to transmit 24 channels each sampled with 8 bits at 8000 samples/sec?", options: ["1.024 Mbps", "1.536 Mbps", "1.544 Mbps", "1.620 Mbps"], answer: "C", explanation: "Line speed = 24 × 8 × 8000 = 1.536 Mbps + 8 kbps framing = 1.544 Mbps." },
+            { question: "What encoding method is known for poor clock recovery with long strings of 0s?", options: ["Manchester", "B8ZS", "NRZ", "AMI"], answer: "C", explanation: "Non-Return-to-Zero (NRZ) does not guarantee signal transitions, which complicates clock recovery." },
+            { question: "What is DSX used for?", options: ["Digital switching", "Digital signal cross-connect", "Analog encoding", "Modulation detection"], answer: "B", explanation: "DSX (Digital Signal Cross-connect) panels are used for monitoring and patching digital signal paths." },
+            { question: "What does a signaling bit (e.g., D-bit) do in T1 systems?", options: ["Carries user data", "Provides frame timing", "Supports call supervision and control", "Indicates CRC errors"], answer: "C", explanation: "D-bit is used for signaling functions such as on-hook/off-hook or call progress." },
+            { question: "What is the total number of bits transmitted in one ESF (Extended Superframe)?", options: ["2316", "2560", "4632", "386"], answer: "C", explanation: "ESF has 24 frames of 193 bits each: 24 × 193 = 4632 bits." },
+            { question: "What is the main reason for using framing bits in TDM systems?", options: ["Increase bandwidth", "Add parity", "Synchronization", "Encode voice"], answer: "C", explanation: "Framing bits help receivers maintain alignment with the multiplexed data structure." },
+            { question: "What does a 'variable-data-rate' mode mean?", options: ["All channels get equal time slots", "Data rate adjusts based on demand", "Clock speed is fixed", "Encoding is randomized"], answer: "B", explanation: "In variable-data-rate mode, data rates adapt based on channel activity, improving efficiency." },
+            { question: "Which of the following is NOT a line coding scheme?", options: ["UPNRZ", "AMI", "PCM", "BPRZ"], answer: "C", explanation: "PCM is a modulation scheme (Pulse Code Modulation), not a line coding method." },
+            { question: "In the bit stream 1110010101100, how many 1s will be encoded as alternating polarity in AMI?", options: ["5", "6", "7", "8"], answer: "C", explanation: "The stream contains seven 1s, each of which is encoded with alternating positive and negative voltage in AMI." },
+            { question: "What is the basic frame time duration in a T1 system?", options: ["125 microseconds", "1 millisecond", "8 milliseconds", "64 microseconds"], answer: "A", explanation: "In a T1 system, each frame is sent every 125 microseconds to maintain an 8000 frames/second rate." },
+            { question: "A PCM system uses 7-bit samples with a framing bit added. What is the total size of one channel’s data per frame?", options: ["7 bits", "8 bits", "9 bits", "14 bits"], answer: "B", explanation: "Each channel's sample is 7 bits, and a framing bit is added to the frame, effectively making each channel slot 8 bits for calculation purposes within the 193-bit frame structure." },
+            { question: "What is the role of the B-bit in T1 signaling?", options: ["Bandwidth allocation", "Backup frame reference", "Supervisory signaling in the multiframe format", "Bit-stuffing control"], answer: "C", explanation: "The B-bit is part of the A/B/B/A multiframe signaling system used to convey call control information." },
+            { question: "What is the main benefit of using an Extended Superframe (ESF) over a basic Superframe?", options: ["Reduced bit rate", "Larger frame size", "Better synchronization and error detection", "AMI encoding"], answer: "C", explanation: "ESF allows improved maintenance, performance monitoring, and error correction over standard SF." },
+            { question: "What type of system uses a BPRZ encoding format?", options: ["Analog TV", "Fiber-optic systems", "T1 PCM transmission systems", "DSL"], answer: "C", explanation: "BPRZ (Bipolar Return-to-Zero) encoding is used in T1 systems to ensure clock recovery and signal integrity." },
+            { question: "What is the voltage level for logic “0” in AMI encoding?", options: ["+5V", "-5V", "0V", "±2.5V"], answer: "C", explanation: "In AMI encoding, binary 0 is represented by no voltage (0V), while 1s alternate between positive and negative voltages." },
+            { question: "Which type of encoding eliminates long strings of zeros?", options: ["NRZ", "B8ZS", "PCM", "Gray code"], answer: "B", explanation: "Binary Eight Zero Substitution (B8ZS) replaces eight consecutive zeros with a specific bipolar violation code." },
+            { question: "What is the minimum bandwidth required to transmit a 64 kbps signal using AMI (assuming ideal conditions)?", options: ["64 kHz", "32 kHz", "128 kHz", "16 kHz"], answer: "B", explanation: "According to the Nyquist criterion, the minimum bandwidth is half the data rate → 64 kbps ÷ 2 = 32 kHz." },
+            { question: "What component in a TDM system recovers clock and framing bits?", options: ["DSP", "Decoder", "Line receiver", "Framing synchronizer"], answer: "D", explanation: "The framing synchronizer locks onto framing bits to recover timing for TDM signal interpretation." },
+            { question: "How many samples per second are needed for a single 4 kHz channel based on Nyquist?", options: ["8000", "4000", "16000", "1000"], answer: "A", explanation: "Nyquist sampling requires a rate at least twice the signal bandwidth: 2 × 4 kHz = 8 kHz." },
+            { question: "What is the framing bit pattern used in a basic Superframe format?", options: ["Repeating 1s", "100011011100", "111100001111", "010101010101"], answer: "B", explanation: "The 12-frame Superframe uses the bit pattern 100011011100 for synchronization purposes." },
+            { question: "Which component allows the separation of optical signals by wavelength in WDM systems?", options: ["AMI Demodulator", "Multiplexer", "Wavelength demultiplexer", "Attenuator"], answer: "C", explanation: "A WDM demultiplexer separates optical signals based on their unique wavelengths." },
+            { question: "Which encoding format results in three voltage levels: positive, zero, and negative?", options: ["NRZ", "AMI", "B8ZS", "UPNRZ"], answer: "B", explanation: "AMI uses +V and -V for 1s and 0V for 0s, resulting in a three-level signal." },
+            { question: "What is the result of applying UPNRZ to a binary 1?", options: ["Positive voltage, no return to zero", "No voltage", "Alternating polarities", "Low voltage followed by high"], answer: "A", explanation: "UPNRZ stands for Unipolar Non-Return to Zero, so a binary 1 maintains a constant high level." },
+            { question: "Which T-carrier system supports the highest capacity?", options: ["T1", "T2", "T3", "T4"], answer: "D", explanation: "T4 is the highest-capacity system in the T-carrier family, supporting more channels than T3." },
+            { question: "What does a DS-3 signal correspond to?", options: ["T1", "T2", "T3", "T4"], answer: "C", explanation: "DS-3 is the digital signal equivalent of a T3 line, transmitting at 44.736 Mbps." },
+            { question: "What is the channel capacity of a DS-1 signal?", options: ["24 channels", "96 channels", "672 channels", "48 channels"], answer: "A", explanation: "DS-1 is the digital signal format used in T1 systems and carries 24 DS-0 channels." },
+            { question: "In a PCM-TDM system, what increases if you increase the sampling rate?", options: ["Framing size", "Line speed", "Quantization error", "Bit depth"], answer: "B", explanation: "A higher sampling rate results in more samples per second, which increases the overall bit rate or line speed." },
+            { question: "Which encoding format combines the benefits of AMI and error checking?", options: ["NRZ", "UPNRZ", "B8ZS", "FSK"], answer: "C", explanation: "B8ZS builds on AMI encoding by adding error-checking via bipolar violations during long zero runs." },
+            { question: "What is the data rate of a standard DS-3 signal?", options: ["2.048 Mbps", "1.544 Mbps", "6.312 Mbps", "44.736 Mbps"], answer: "D", explanation: "DS-3 is a high-capacity signal used in T3 lines, transmitting at 44.736 Mbps." },
+            { question: "Which bit carries maintenance or error-checking info in ESF?", options: ["A Bit", "C Bit", "Framing Bit", "D Bit"], answer: "D", explanation: "The D bit in ESF formats is used for data link and maintenance signaling." },
+            { question: "What is the minimum bandwidth required to transmit a 256 kbps signal using NRZ?", options: ["256 kHz", "128 kHz", "512 kHz", "64 kHz"], answer: "B", explanation: "The minimum bandwidth = bit rate / 2 = 256 kbps ÷ 2 = 128 kHz." },
+            { question: "What distinguishes UPRZ from BPRZ?", options: ["Different voltages", "UPRZ returns to zero; BPRZ alternates polarities", "UPRZ uses no zero levels", "UPRZ skips bits"], answer: "B", explanation: "UPRZ returns to zero after each pulse, while BPRZ uses alternating polarities like AMI." },
+            { question: "What is one major drawback of NRZ encoding?", options: ["Too much bandwidth", "Low efficiency", "Poor clock synchronization", "Too many transitions"], answer: "C", explanation: "NRZ may have long sequences without transitions, making it hard to synchronize clocks." },
+            { question: "What is the standard sampling rate for PCM voice signals in T1?", options: ["4 kHz", "2 kHz", "8 kHz", "16 kHz"], answer: "C", explanation: "PCM voice signals are sampled at 8 kHz (every 125 μs) in T1 systems." },
+            { question: "Which of the following is NOT a characteristic of T1 systems?", options: ["24 voice channels", "1.544 Mbps", "32 kHz sampling", "193-bit frames"], answer: "C", explanation: "T1 systems use an 8 kHz sampling rate, not 32 kHz." },
+            { question: "What is the role of the “framing synchronizer” in a TDM system?", options: ["Encodes the signal", "Maintains frequency accuracy", "Identifies the start of frames", "Switches channels"], answer: "C", explanation: "It locks onto the framing bits and identifies the beginning of frames for proper demultiplexing." },
+            { question: "What problem arises when long strings of zeros are transmitted in AMI?", options: ["Voltage drops", "Loss of timing recovery", "Channel overlap", "Signal inversion"], answer: "B", explanation: "Long sequences of 0s in AMI produce no transitions, making it difficult for receivers to extract the clock." },
+            { question: "What is the total number of bits in a single Superframe?", options: ["2316", "193", "1544", "1536"], answer: "A", explanation: "12 frames × 193 bits = 2316 bits in a Superframe." },
+            { question: "In B6ZS, how many consecutive zeros are replaced with a special code?", options: ["6", "8", "4", "12"], answer: "A", explanation: "B6ZS (Bipolar 6-Zero Substitution) substitutes six consecutive zeros with a violation pattern." },
+            { question: "A bitstream has eight consecutive zeros. Which encoding technique corrects this?", options: ["AMI", "B8ZS", "NRZ", "UPNRZ"], answer: "B", explanation: "B8ZS introduces intentional bipolar violations to maintain clock synchronization." },
+            { question: "Which encoding scheme uses one transition per bit to improve timing recovery?", options: ["NRZ", "AMI", "Manchester", "B8ZS"], answer: "C", explanation: "Manchester encoding includes a transition in the middle of every bit period for easy synchronization." },
+            { question: "What is the total bandwidth requirement of a 96-channel PCM system (8 kHz sampling, 8 bits/sample)?", options: ["1.544 Mbps", "6.312 Mbps", "3.152 Mbps", "44.736 Mbps"], answer: "B", explanation: "96 × 8 × 8000 = 6.144 Mbps + overhead ≈ 6.312 Mbps (T2 system)." },
+            { question: "Which is a higher-level digital signal format than DS-1?", options: ["DS-0", "DS-2", "DS-X", "PCM"], answer: "B", explanation: "DS-2 supports higher bit rates and channel capacity than DS-1." },
+            { question: "Which T-carrier system uses 672 channels?", options: ["T1", "T2", "T3", "T4"], answer: "C", explanation: "T3 systems carry 672 voice channels (28 T1s)." },
+            { question: "What is the line speed of a PCM system using 24 channels, 7-bit samples, and a 9000 sample rate?", options: ["1.344 Mbps", "1.728 Mbps", "1.536 Mbps", "1.744 Mbps"], answer: "B", explanation: "24 × (7+1 for framing overhead) × 9000 = 1.728 Mbps. The framing bit is considered per sample in this calculation." },
+            { question: "What is a typical use for DSX panels?", options: ["RF routing", "Multiplexing analog signals", "Cross-connecting DS signals", "Filtering PCM signals"], answer: "C", explanation: "DSX (Digital Signal Cross-connect) panels help monitor and reroute digital circuits." },
+            { question: "Which carrier system uses 32 channels and a 2.048 Mbps data rate?", options: ["T1", "E1", "T3", "DS-3"], answer: "B", explanation: "E1 is the European equivalent of T1 and carries 32 channels at 2.048 Mbps." },
+            { question: "What is the minimum Nyquist bandwidth for a 9000 bps binary signal?", options: ["4500 Hz", "9000 Hz", "18000 Hz", "2250 Hz"], answer: "A", explanation: "Minimum Nyquist bandwidth = Data rate / 2 = 9000 ÷ 2 = 4500 Hz." },
+            { question: "What encoding scheme uses alternating voltages for 1s and 0 volts for 0s?", options: ["BPRZ", "AMI", "UPNRZ", "B6ZS"], answer: "B", explanation: "AMI encodes 1s with alternating polarity and 0s with zero voltage." },
+            { question: "What happens if two 1s are encoded with the same polarity in AMI?", options: ["No error", "Bipolar violation", "Sync restoration", "Bit-stuffing"], answer: "B", explanation: "Alternating polarity is required in AMI. Repeating polarity creates a bipolar violation." },
+            { question: "What distinguishes BPRZ from AMI?", options: ["Uses zero voltage for both 0s and 1s", "Returns to zero within each bit period", "Has constant voltage for 1s", "Removes framing bits"], answer: "B", explanation: "BPRZ (Bipolar Return to Zero) returns to 0 volts mid-bit, while AMI holds voltage for full bit duration." },
+            { question: "What does PCM stand for?", options: ["Polar Code Modulation", "Pulse Coded Modulation", "Phase Carrier Mapping", "Power Circuit Monitoring"], answer: "B", explanation: "PCM is Pulse Coded Modulation, a method of converting analog signals to digital." },
+            { question: "Which modulation method is used in digital voice systems?", options: ["FM", "QAM", "PCM", "AM"], answer: "C", explanation: "PCM is used in digital telephony to convert analog voice into digital data." },
+            { question: "What’s the minimum number of bits needed to encode 128 levels in PCM?", options: ["6", "7", "8", "9"], answer: "B", explanation: "2⁷ = 128, so 7 bits are the minimum required to represent 128 unique levels." },
+            { question: "What is the purpose of framing in a multiplexed signal?", options: ["Amplification", "Signal separation", "Synchronization", "Noise reduction"], answer: "C", explanation: "Framing allows the receiver to identify the start of each frame for proper demultiplexing." },
+            { question: "A multiplexer outputs a signal at 1.544 Mbps. How many 64 kbps channels are supported?", options: ["20", "24", "28", "30"], answer: "B", explanation: "1.536 Mbps is for 24 × 64 kbps channels, plus 8 kbps for framing = 1.544 Mbps total." },
+            { question: "What is the function of the C-bit in ESF systems?", options: ["Error control and maintenance", "Encodes user data", "Replaces the framing bit", "Compresses PCM"], answer: "A", explanation: "C-bits provide cyclic redundancy checks (CRC) and other maintenance features in ESF." },
+            { question: "What happens during a bipolar violation in B8ZS?", options: ["A zero replaces a one", "The same polarity is used twice", "A sync pulse is added", "The bit is discarded"], answer: "B", explanation: "B8ZS uses the same polarity twice (which breaks AMI rules) to signal a deliberate substitution pattern." },
+            { question: "What’s the total capacity of a T4 line?", options: ["6.312 Mbps", "274.176 Mbps", "44.736 Mbps", "1.544 Mbps"], answer: "B", explanation: "T4 lines carry high-capacity digital signals at 274.176 Mbps, used for backbone transmission." }
+        ];
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const teams = [
-        { name: "Quizzer A", category: "NA", score: 0 },
-        { name: "Quizzer B", category: "NA", score: 0 },
-        { name: "Quizzer C", category: "NA", score: 0 }
-      ];
+        const tfQuestions = [
+            { statement: "The DS-0 channel has a standard data rate of 56 kbps.", isTrue: false, corrected: "The DS-0 channel has a standard data rate of 64 kbps.", explanation: "It's the basic digital signaling rate used in telephony systems." },
+            { statement: "A multiplexer is used to separate signals from a single input to multiple outputs.", isTrue: false, corrected: "A multiplexer combines multiple inputs into a single output.", explanation: "A demultiplexer performs the separation function." },
+            { statement: "In a T1 system, each frame consists of 193 bits.", isTrue: true, explanation: "This includes 192 bits for data (24 channels × 8 bits) and 1 framing bit." },
+            { statement: "Time-Division Multiplexing separates signals by assigning different frequencies to each one.", isTrue: false, corrected: "TDM separates signals by assigning them unique time slots.", explanation: "Frequency-Division Multiplexing (FDM) uses frequency separation." },
+            { statement: "A Superframe consists of 24 T1 frames.", isTrue: false, corrected: "A Superframe consists of 12 T1 frames.", explanation: "Extended Superframe (ESF) uses 24 frames." },
+            { statement: "AMI encoding uses a single voltage polarity to represent binary 1s.", isTrue: false, corrected: "AMI uses alternating positive and negative voltages for binary 1s.", explanation: "This maintains a zero average DC level and supports clock recovery." },
+            { statement: "PCM systems typically use an 8 kHz sampling rate for voice.", isTrue: true, explanation: "Based on Nyquist, it supports a 4 kHz voice bandwidth." },
+            { statement: "Framing bits are used to indicate where one time slot ends and the next begins.", isTrue: false, corrected: "Framing bits indicate the start of a frame, not individual time slots.", explanation: "They help in frame synchronization, not channel delimitation." },
+            { statement: "The T3 system has a total data rate of 44.736 Mbps.", isTrue: true, explanation: "T3 is also known as DS-3 and carries 672 voice channels." },
+            { statement: "The B8ZS encoding format is used to reduce the number of ones in a signal.", isTrue: false, corrected: "B8ZS is used to replace long strings of zeros with bipolar violations.", explanation: "It ensures clock recovery by preventing long periods without transitions." },
+            { statement: "The D-bit in ESF is used for maintenance and performance monitoring.", isTrue: true, explanation: "It's part of the data link used in Extended Superframe format." },
+            { statement: "A DS-1 signal is equivalent to a T1 line.", isTrue: true, explanation: "DS-1 is the electrical signal format; T1 is the physical line implementation." },
+            { statement: "UPNRZ encoding returns to zero between bits.", isTrue: false, corrected: "UPNRZ maintains a constant high level for binary 1s without returning to zero.", explanation: "Only RZ encodings return to zero within a bit period." },
+            { statement: "The minimum sample rate for a 3.4 kHz signal is 6.8 kHz.", isTrue: true, explanation: "Nyquist states minimum rate = 2 × bandwidth." },
+            { statement: "The DSX panel is used for analog signal routing.", isTrue: false, corrected: "DSX panels are used for digital signal cross-connect.", explanation: "They manage DS signal paths in telecom systems." },
+            { statement: "BPRZ encoding ensures a transition to zero after each pulse.", isTrue: true, explanation: "This helps with clock recovery but increases bandwidth." },
+            { statement: "In AMI, binary 0s are represented with alternating voltage polarities.", isTrue: false, corrected: "In AMI, binary 1s are represented with alternating polarities; 0s are 0V.", explanation: "0s are silent, and 1s alternate between +V and -V." },
+            { statement: "The Extended Superframe (ESF) improves error detection over the basic Superframe.", isTrue: true, explanation: "ESF supports CRC error checking and more efficient signaling." },
+            { statement: "Fixed-data-rate mode dynamically allocates bandwidth based on usage.", isTrue: false, corrected: "Variable-data-rate mode dynamically allocates bandwidth.", explanation: "Fixed mode allocates a constant bandwidth." },
+            { statement: "In T1, each channel gets 64 bits of data per frame.", isTrue: false, corrected: "Each T1 channel gets 8 bits per frame.", explanation: "64 kbps means 8 bits every 125 µs." },
+            { statement: "UPRZ encoding uses both positive and negative voltages.", isTrue: false, corrected: "UPRZ is unipolar; it uses positive voltage for 1s and returns to zero.", explanation: "Bipolar formats use ± voltages." },
+            { statement: "ESF uses a 24-bit cyclic pattern for frame synchronization.", isTrue: true, explanation: "This replaces the 12-bit pattern used in standard SF." },
+            { statement: "T4 lines are commonly used in household broadband.", isTrue: false, corrected: "T4 lines are used in large telecom backbones, not residential access.", explanation: "Their high capacity (274.176 Mbps) is overkill for consumer needs." },
+            { statement: "The minimum bandwidth for a 128 kbps NRZ signal is 128 kHz.", isTrue: false, corrected: "The minimum bandwidth is 64 kHz (128 kbps ÷ 2).", explanation: "Based on Nyquist theorem for binary signals." },
+            { statement: "PCM stands for Pulse Code Modulation.", isTrue: true, explanation: "It’s used to digitally represent sampled analog signals." },
+            { statement: "B6ZS replaces 6 consecutive 1s with a bipolar violation pattern.", isTrue: false, corrected: "B6ZS replaces 6 consecutive 0s, not 1s.", explanation: "Like B8ZS, it breaks long zero runs to aid clock recovery." },
+            { statement: "The T2 system supports 96 channels.", isTrue: true, explanation: "T2 = 96 DS-0 channels → ~6.312 Mbps." },
+            { statement: "DS-4 has a lower capacity than DS-3.", isTrue: false, corrected: "DS-4 has a higher capacity than DS-3.", explanation: "DS-3 = 44.736 Mbps; DS-4 > 200 Mbps." },
+            { statement: "A 7-bit PCM sample plus a framing bit results in 9 bits per sample.", isTrue: false, corrected: "A 7-bit sample + 1 framing bit = 8 bits total per frame slot.", explanation: "Framing bits are part of the overall frame, not added to each individual sample to make them larger." },
+            { statement: "Bit synchronization is maintained in B8ZS by inserting known violations.", isTrue: true, explanation: "These predictable bipolar violations help maintain clock alignment." }
+        ];
 
-      let selectedTeam = null;
-      let currentlyEditing = null;
+        // --- GLOBAL STATE ---
+        let currentQuizType = 'mcq'; // 'mcq' or 'tf'
 
-      const scoreboardBody = document.getElementById('scoreboard-body');
-      const displayBody = document.getElementById('display-body');
-      const teamNameInput = document.getElementById('teamNameInput');
-      const categoryInput = document.getElementById('categoryInput');
-      const pointsInput = document.getElementById('pointsInput');
+        // --- MCQ State ---
+        let mcqCurrentIndex = 0;
+        let mcqScore = 0;
+        let mcqShuffledQuestions = [];
 
-      function calculateRanks() {
-        // First, sort teams by score in descending order
-        teams.sort((a, b) => b.score - a.score);
-        
-        // Then calculate ranks with ties
-        if (teams.length === 0) return;
-        
-        let currentRank = 1;
-        teams[0].rank = currentRank;
-        
-        for (let i = 1; i < teams.length; i++) {
-          if (teams[i].score === teams[i-1].score) {
-            // Same score as previous, same rank
-            teams[i].rank = currentRank;
-          } else {
-            // Different score, increment rank by position
-            currentRank = i + 1;
-            teams[i].rank = currentRank;
-          }
+        // --- TF State ---
+        let tfCurrentIndex = 0;
+        let tfScore = 0;
+        let tfShuffledQuestions = [];
+
+        // --- DOM Elements ---
+        const quizArea = document.getElementById('quiz-area');
+        const mcqTab = document.getElementById('mcq-tab');
+        const tfTab = document.getElementById('tf-tab');
+
+        // --- HELPER FUNCTIONS ---
+        function shuffleArray(array) {
+            return array.sort(() => Math.random() - 0.5);
         }
-      }
 
-      function renderScoreboard() {
-        calculateRanks();
-        scoreboardBody.innerHTML = '';
-        displayBody.innerHTML = '';
+        function loadQuizContent() {
+            quizArea.innerHTML = ''; // Clear previous content
+            if (currentQuizType === 'mcq') {
+                const template = document.getElementById('mcq-template').content.cloneNode(true);
+                quizArea.appendChild(template);
+                startMcqQuiz();
+            } else {
+                const template = document.getElementById('tf-template').content.cloneNode(true);
+                quizArea.appendChild(template);
+                startTfQuiz();
+            }
+        }
 
-        teams.forEach((team, index) => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td class="rank">${team.rank}</td>
-            <td><span class="editable team-name" data-index="${index}">${team.name}</span></td>
-            <td class="category">
-              <select class="category-select" data-index="${index}">
-                <option value="NA" ${team.category === 'NA' ? 'selected' : ''}>NA</option>
-                <option value="MO" ${team.category === 'MO' ? 'selected' : ''}>MO</option>
-                <option value="IQS" ${team.category === 'IQS' ? 'selected' : ''}>IQS</option>
-                <option value="Senior" ${team.category === 'Senior' ? 'selected' : ''}>Senior</option>
-              </select>
-            </td>
-            <td class="score"><span class="editable team-score" data-index="${index}">${team.score}</span></td>
-            <td class="team-actions">
-              <button class="select-btn" data-index="${index}">${selectedTeam === index ? 'Selected' : 'Select'}</button>
-              <button class="remove-btn" data-index="${index}">Remove</button>
-            </td>
-          `;
-          scoreboardBody.appendChild(row);
-
-          const displayRow = document.createElement('tr');
-          // Apply medal colors based on rank (1-3)
-          if (team.rank === 1) displayRow.classList.add('gold');
-          else if (team.rank === 2) displayRow.classList.add('silver');
-          else if (team.rank === 3) displayRow.classList.add('bronze');
-
-          displayRow.innerHTML = `
-            <td>${team.rank}</td>
-            <td>${team.name}</td>
-            <td>${team.score}</td>
-          `;
-          displayBody.appendChild(displayRow);
-        });
-
-        document.querySelectorAll('.select-btn').forEach(btn => {
-          btn.addEventListener('click', function () {
-            const index = parseInt(this.getAttribute('data-index'));
-            selectedTeam = selectedTeam === index ? null : index;
-            renderScoreboard();
-          });
-        });
-
-        document.querySelectorAll('.remove-btn').forEach(btn => {
-          btn.addEventListener('click', function () {
-            const index = parseInt(this.getAttribute('data-index'));
-            teams.splice(index, 1);
-            if (selectedTeam === index) selectedTeam = null;
-            else if (selectedTeam > index) selectedTeam -= 1;
-            renderScoreboard();
-          });
-        });
-
-        document.querySelectorAll('.category-select').forEach(select => {
-          select.addEventListener('change', function() {
-            const index = parseInt(this.getAttribute('data-index'));
-            teams[index].category = this.value;
-          });
-        });
-
-        document.querySelectorAll('.editable').forEach(editable => {
-          editable.addEventListener('click', function () {
-            if (currentlyEditing) return;
-
-            const index = parseInt(this.getAttribute('data-index'));
-            const isScore = this.classList.contains('team-score');
-            const currentValue = isScore ? teams[index].score : teams[index].name;
-
-            const input = document.createElement('input');
-            input.type = isScore ? 'number' : 'text';
-            input.className = 'editable-input';
-            input.value = currentValue;
-
-            this.innerHTML = '';
-            this.appendChild(input);
-            input.focus();
-
-            currentlyEditing = { element: this, index, isScore, originalValue: currentValue };
-
-            const finishEditing = () => {
-              if (!currentlyEditing) return;
-              const newValue = isScore ? parseInt(input.value) || 0 : input.value.trim();
-              if (isScore) teams[index].score = newValue;
-              else teams[index].name = newValue || teams[index].name;
-
-              currentlyEditing = null;
-              renderScoreboard();
-            };
-
-            input.addEventListener('blur', finishEditing);
-            input.addEventListener('keypress', e => {
-              if (e.key === 'Enter') finishEditing();
+        // --- MCQ QUIZ LOGIC ---
+        function startMcqQuiz() {
+            mcqCurrentIndex = 0;
+            mcqScore = 0;
+            mcqShuffledQuestions = shuffleArray([...mcqQuestions]);
+            document.getElementById('mcq-total-questions').textContent = mcqShuffledQuestions.length;
+            document.getElementById('mcq-next-btn').addEventListener('click', () => {
+                mcqCurrentIndex++;
+                loadMcqQuestion();
             });
-          });
-        });
-      }
-
-      document.getElementById('addTeamBtn').addEventListener('click', () => {
-        const name = teamNameInput.value.trim();
-        const category = categoryInput.value;
-        if (name) {
-          teams.push({ name, category, score: 0 });
-          teamNameInput.value = '';
-          renderScoreboard();
-        } else alert('Please enter a quizzer name');
-      });
-
-      document.getElementById('addTeam').addEventListener('click', () => teamNameInput.focus());
-
-      document.getElementById('addPoints').addEventListener('click', () => {
-        if (selectedTeam !== null) {
-          const points = parseInt(pointsInput.value) || 0;
-          teams[selectedTeam].score += points;
-          renderScoreboard();
-        } else alert('Select a team first');
-      });
-
-      document.getElementById('subtractPoints').addEventListener('click', () => {
-        if (selectedTeam !== null) {
-          const points = parseInt(pointsInput.value) || 0;
-          teams[selectedTeam].score = Math.max(0, teams[selectedTeam].score - points);
-          renderScoreboard();
-        } else alert('Select a team first');
-      });
-
-      document.getElementById('resetScores').addEventListener('click', () => {
-        if (confirm('Reset all scores to 0?')) {
-          teams.forEach(team => team.score = 0);
-          renderScoreboard();
+            document.getElementById('mcq-restart-btn').addEventListener('click', startMcqQuiz);
+            loadMcqQuestion();
         }
-      });
 
-      function switchTab(tab) {
-        // Update all tab buttons
-        document.querySelectorAll('.tab-button').forEach(btn => {
-          btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
-        });
+        function loadMcqQuestion() {
+            const resultsContainer = document.getElementById('mcq-results-container');
+            const quizContainer = resultsContainer.previousElementSibling;
+
+            if (mcqCurrentIndex < mcqShuffledQuestions.length) {
+                resultsContainer.style.display = 'none';
+                quizContainer.style.display = 'block';
+                
+                const questionData = mcqShuffledQuestions[mcqCurrentIndex];
+                document.getElementById('mcq-question-number').textContent = mcqCurrentIndex + 1;
+                document.getElementById('mcq-score').textContent = mcqScore;
+                document.getElementById('mcq-question-text').textContent = questionData.question;
+                
+                const optionsContainer = document.getElementById('mcq-options-container');
+                optionsContainer.innerHTML = '';
+                
+                const optionLetters = ['A', 'B', 'C', 'D'];
+                questionData.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.innerHTML = `<span class="font-bold mr-2">${optionLetters[index]}.</span> ${option}`;
+                    button.className = "option-btn w-full text-left p-4 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-100 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300";
+                    button.dataset.answer = optionLetters[index];
+                    button.addEventListener('click', selectMcqAnswer);
+                    optionsContainer.appendChild(button);
+                });
+
+                document.getElementById('mcq-feedback').style.display = 'none';
+                document.getElementById('mcq-next-btn').style.display = 'none';
+            } else {
+                showMcqResults();
+            }
+        }
+
+        function selectMcqAnswer(e) {
+            const selectedBtn = e.currentTarget;
+            const correctAnswer = mcqShuffledQuestions[mcqCurrentIndex].answer;
+
+            Array.from(document.getElementById('mcq-options-container').children).forEach(button => {
+                button.disabled = true;
+                if (button.dataset.answer === correctAnswer) {
+                    button.classList.add('correct');
+                }
+            });
+
+            if (selectedBtn.dataset.answer === correctAnswer) {
+                mcqScore++;
+                document.getElementById('mcq-score').textContent = mcqScore;
+            } else {
+                selectedBtn.classList.add('incorrect');
+            }
+            
+            const feedbackEl = document.getElementById('mcq-feedback');
+            feedbackEl.innerHTML = `<p class="font-bold">Explanation:</p><p>${mcqShuffledQuestions[mcqCurrentIndex].explanation}</p>`;
+            feedbackEl.style.display = 'block';
+            document.getElementById('mcq-next-btn').style.display = 'inline-block';
+        }
+
+        function showMcqResults() {
+            const resultsContainer = document.getElementById('mcq-results-container');
+            const quizContainer = resultsContainer.previousElementSibling;
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            document.getElementById('mcq-final-score').textContent = `${mcqScore} / ${mcqShuffledQuestions.length}`;
+        }
+
+
+        // --- TRUE/FALSE QUIZ LOGIC ---
+        function startTfQuiz() {
+            tfCurrentIndex = 0;
+            tfScore = 0;
+            tfShuffledQuestions = shuffleArray([...tfQuestions]);
+            document.getElementById('tf-total-questions').textContent = tfShuffledQuestions.length;
+            document.getElementById('tf-next-btn').addEventListener('click', () => {
+                tfCurrentIndex++;
+                loadTfQuestion();
+            });
+            document.getElementById('tf-restart-btn').addEventListener('click', startTfQuiz);
+            loadTfQuestion();
+        }
+
+        function loadTfQuestion() {
+            const resultsContainer = document.getElementById('tf-results-container');
+            const quizContainer = resultsContainer.previousElementSibling;
+
+            if (tfCurrentIndex < tfShuffledQuestions.length) {
+                resultsContainer.style.display = 'none';
+                quizContainer.style.display = 'block';
+                
+                const questionData = tfShuffledQuestions[tfCurrentIndex];
+                document.getElementById('tf-question-number').textContent = tfCurrentIndex + 1;
+                document.getElementById('tf-score').textContent = tfScore;
+                document.getElementById('tf-question-text').textContent = questionData.statement;
+                
+                const optionsContainer = document.getElementById('tf-options-container');
+                optionsContainer.innerHTML = `
+                    <button data-answer="True" class="tf-option-btn bg-green-500 text-white font-bold py-2 px-10 rounded-lg hover:bg-green-600 transition-colors">True</button>
+                    <button data-answer="False" class="tf-option-btn bg-red-500 text-white font-bold py-2 px-10 rounded-lg hover:bg-red-600 transition-colors">False</button>
+                `;
+                optionsContainer.querySelectorAll('.tf-option-btn').forEach(btn => btn.addEventListener('click', selectTfAnswer));
+
+                document.getElementById('tf-feedback').style.display = 'none';
+                document.getElementById('tf-next-btn').style.display = 'none';
+            } else {
+                showTfResults();
+            }
+        }
         
-        // Toggle visibility of tabs
-        document.getElementById('manageTab').style.display = tab === 'manage' ? 'block' : 'none';
-        document.getElementById('displayTab').style.display = tab === 'display' ? 'block' : 'none';
-        document.getElementById('manageControls').style.display = tab === 'manage' ? 'flex' : 'none';
-        document.getElementById('manageControlsPanel').style.display = tab === 'manage' ? 'block' : 'none';
-        
-        // Hide the original tabs in display mode
-        document.querySelector('.container > .tabs').style.display = tab === 'manage' ? 'flex' : 'none';
-      }
+        function selectTfAnswer(e) {
+            const selectedBtn = e.currentTarget;
+            const selectedAnswer = selectedBtn.dataset.answer === 'True';
+            const questionData = tfShuffledQuestions[tfCurrentIndex];
+            const isCorrect = selectedAnswer === questionData.isTrue;
+            
+            document.querySelectorAll('.tf-option-btn').forEach(btn => btn.disabled = true);
 
-      document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const tab = btn.getAttribute('data-tab');
-          switchTab(tab);
+            const feedbackEl = document.getElementById('tf-feedback');
+            let feedbackHTML = '';
+
+            if(isCorrect) {
+                tfScore++;
+                document.getElementById('tf-score').textContent = tfScore;
+                feedbackHTML = `<p class="font-bold text-green-600">Correct!</p>`;
+            } else {
+                feedbackHTML = `<p class="font-bold text-red-600">Incorrect.</p>`;
+            }
+
+            if (!questionData.isTrue) {
+                feedbackHTML += `<p class="mt-2"><span class="font-semibold">Correct Statement:</span> ${questionData.corrected}</p>`;
+            }
+            feedbackHTML += `<p class="mt-2"><span class="font-semibold">Explanation:</span> ${questionData.explanation}</p>`;
+            
+            feedbackEl.innerHTML = feedbackHTML;
+            feedbackEl.style.display = 'block';
+            document.getElementById('tf-next-btn').style.display = 'inline-block';
+        }
+
+        function showTfResults() {
+             const resultsContainer = document.getElementById('tf-results-container');
+            const quizContainer = resultsContainer.previousElementSibling;
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            document.getElementById('tf-final-score').textContent = `${tfScore} / ${tfShuffledQuestions.length}`;
+        }
+
+
+        // --- EVENT LISTENERS for TABS ---
+        mcqTab.addEventListener('click', () => {
+            if (currentQuizType === 'tf') {
+                currentQuizType = 'mcq';
+                mcqTab.classList.add('tab-active');
+                tfTab.classList.remove('tab-active');
+                loadQuizContent();
+            }
         });
-      });
 
-      renderScoreboard();
-    });
-  </script>
+        tfTab.addEventListener('click', () => {
+            if (currentQuizType === 'mcq') {
+                currentQuizType = 'tf';
+                tfTab.classList.add('tab-active');
+                mcqTab.classList.remove('tab-active');
+                loadQuizContent();
+            }
+        });
+
+        // --- INITIAL LOAD ---
+        window.addEventListener('load', loadQuizContent);
+    </script>
 </body>
 </html>
