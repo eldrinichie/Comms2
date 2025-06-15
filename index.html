@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Electronics Quiz</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #e0f2fe, #f3e8ff); /* bg-gradient-to-br from-blue-100 to-purple-100 */
+        }
+        /* Custom styles for disabled buttons, matching Tailwind's disabled appearance */
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div id="app-container" class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-3xl transform transition-all duration-500 ease-in-out hover:scale-105">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 rounded-lg bg-blue-200 p-3 shadow-md">Digital Electronics Quiz</h1>
+
+        <!-- Tab Navigation -->
+        <div id="tab-navigation" class="flex justify-center mb-8 gap-2 flex-wrap">
+            <!-- Tab buttons will be rendered here by JavaScript -->
+        </div>
+
+        <div id="quiz-content">
+            <!-- Quiz questions, choices, feedback, and buttons will be rendered here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Define all quiz questions, categorized by topic
+        const quizzes = {
+            "K-Map Simplification": [
+                {
+                    question: "What is the primary purpose of a Karnaugh map (K-map) in Boolean algebra?",
+                    choices: [
+                        "To perform arithmetic operations",
+                        "To convert analog signals to digital",
+                        "To graphically simplify Boolean expressions",
+                        "To design complex algorithms"
+                    ],
+                    correctAnswer: "To graphically simplify Boolean expressions",
+                    explanation: "K-maps provide a visual method for simplifying Boolean expressions, overcoming the time-consuming nature of Boolean laws."
+                },
+                {
+                    question: "Who introduced the Karnaugh map (K-map) as a method of simplification?",
+                    choices: [
+                        "George Boole",
+                        "Claude Shannon",
+                        "Maurice Karnaugh",
+                        "Alan Turing"
+                    ],
+                    correctAnswer: "Maurice Karnaugh",
+                    explanation: "The K-map, also known as the Karnaugh map, was introduced by Maurice Karnaugh."
+                },
+                {
+                    question: "K-maps can be applied to reduce which type of canonical expressions?",
+                    choices: [
+                        "Only Sum of Products (SOP)",
+                        "Only Product of Sums (POS)",
+                        "Both Sum of Products (SOP) and Product of Sums (POS)",
+                        "Neither SOP nor POS"
+                    ],
+                    correctAnswer: "Both Sum of Products (SOP) and Product of Sums (POS)",
+                    explanation: "K-maps are specifically designed to reduce any canonical SOP or POS form expression."
+                },
+                {
+                    question: "How is a canonical SOP expression defined?",
+                    choices: [
+                        "Product of max terms",
+                        "Sum of max terms",
+                        "Product of min terms",
+                        "Sum of min terms"
+                    ],
+                    correctAnswer: "Sum of min terms",
+                    explanation: "Canonical SOP (Sum of Products) is defined as the sum of minterms."
+                },
+                {
+                    question: "What is a minterm?",
+                    choices: [
+                        "Sum of all input terms, either with or without complement",
+                        "Product of all input terms, either with or without complement",
+                        "A Boolean expression with only one variable",
+                        "An expression used only in POS form"
+                    ],
+                    correctAnswer: "Product of all input terms, either with or without complement",
+                    explanation: "A minterm is defined as the product of all input terms, which can be either complemented or uncomplemented."
+                },
+                {
+                    question: "How is a canonical POS expression defined?",
+                    choices: [
+                        "Product of max terms",
+                        "Sum of max terms",
+                        "Product of min terms",
+                        "Sum of min terms"
+                    ],
+                    correctAnswer: "Product of max terms",
+                    explanation: "Canonical POS (Product of Sums) is defined as the product of max terms."
+                },
+                {
+                    question: "What is a max term?",
+                    choices: [
+                        "Product of all input terms, either with or without complement",
+                        "Sum of all input terms, either with or without complement",
+                        "A Boolean expression with only one variable",
+                        "An expression used only in SOP form"
+                    ],
+                    correctAnswer: "Sum of all input terms, either with or without complement",
+                    explanation: "A max term is defined as the sum of all input terms, which can be either complemented or uncomplemented."
+                },
+                {
+                    question: "In what ways can a question for K-map simplification be presented?",
+                    choices: [
+                        "Only as a complete canonical expression",
+                        "Only as a Boolean function of minterm or max term expression",
+                        "Only as a truth table",
+                        "As a complete canonical expression, a Boolean function of minterm/max term expression, or a truth table"
+                    ],
+                    correctAnswer: "As a complete canonical expression, a Boolean function of minterm/max term expression, or a truth table",
+                    explanation: "K-map questions can be given as a full canonical expression, a shorter minterm or max term expression, or a truth table."
+                },
+                {
+                    question: "A K-map is essentially a re-arranged version of what?",
+                    choices: [
+                        "A logic gate diagram",
+                        "A truth table",
+                        "A circuit schematic",
+                        "A flowchart"
+                    ],
+                    correctAnswer: "A truth table",
+                    explanation: "K-map is described as nothing but a re-arranged truth table, making it easier to work with."
+                },
+                {
+                    question: "How many squares does a K-map have for 'n' number of variables?",
+                    choices: [
+                        "n",
+                        "2n",
+                        "n^2",
+                        "2^n"
+                    ],
+                    correctAnswer: "2^n",
+                    explanation: "A K-map will have 2 raised to the power of the number of variables, determining the number of squares."
+                },
+                {
+                    question: "In a 2-variable K-map for SOP form, how are the values 0 and 1 represented?",
+                    choices: [
+                        "0 as 'a' and 1 as 'a bar'",
+                        "0 as 'a bar' and 1 as 'a'",
+                        "Both 0 and 1 as 'a'",
+                        "Both 0 and 1 as 'a bar'"
+                    ],
+                    correctAnswer: "0 as 'a bar' and 1 as 'a'",
+                    explanation: "In SOP form, 0 is represented as the complemented variable (e.g., 'a bar'), and 1 is represented as the uncomplemented variable (e.g., 'a')."
+                },
+                {
+                    question: "In a 2-variable K-map for POS form, how are the values 0 and 1 represented?",
+                    choices: [
+                        "0 as 'a' and 1 as 'a bar'",
+                        "0 as 'a bar' and 1 as 'a'",
+                        "Both 0 and 1 as 'a'",
+                        "Both 0 and 1 as 'a bar'"
+                    ],
+                    correctAnswer: "0 as 'a' and 1 as 'a bar'",
+                    explanation: "In POS form, 0 is represented as the uncomplemented variable (e.g., 'a'), and 1 is represented as the complemented variable (e.g., 'a bar')."
+                },
+                {
+                    question: "When drawing a 3-variable K-map, what specific binary code is used for the arrangement of variables in the x-axis (e.g., BC)?",
+                    choices: [
+                        "Binary Coded Decimal (BCD)",
+                        "ASCII code",
+                        "Gray code",
+                        "Excess-3 code"
+                    ],
+                    correctAnswer: "Gray code",
+                    explanation: "The arrangement of variables like BC in a 3-variable K-map uses Gray code, where each successive term differs by only one bit."
+                },
+                {
+                    question: "What is the significance of using Gray code in K-maps?",
+                    choices: [
+                        "It makes the map easier to draw",
+                        "It ensures that adjacent cells differ by only one variable, which is crucial for simplification",
+                        "It allows for more variables to be represented",
+                        "It simplifies binary to decimal conversion"
+                    ],
+                    correctAnswer: "It ensures that adjacent cells differ by only one variable, which is crucial for simplification",
+                    explanation: "Gray code ensures that adjacent terms differ by only one place, which is fundamental for correctly identifying groups for simplification."
+                },
+                {
+                    question: "What is the first step when filling a K-map for a SOP expression?",
+                    choices: [
+                        "Mark '0' in squares for each product term",
+                        "Mark '1' in squares for each product term",
+                        "Mark 'X' for \"don't care\" terms",
+                        "Convert minterms to maxterms"
+                    ],
+                    correctAnswer: "Mark '1' in squares for each product term",
+                    explanation: "For SOP expressions, the first step is to mark '1' in the squares corresponding to the given product terms."
+                },
+                {
+                    question: "What is the first step when filling a K-map for a POS expression?",
+                    choices: [
+                        "Mark '1' in squares for each sum term",
+                        "Mark '0' in squares for each sum term",
+                        "Mark 'X' for \"don't care\" terms",
+                        "Convert maxterms to minterms"
+                    ],
+                    correctAnswer: "Mark '0' in squares for each sum term",
+                    explanation: "For POS expressions, the first step is to mark '0' in the squares corresponding to the given sum terms."
+                },
+                {
+                    question: "In K-map simplification, what is an \"octet\"?",
+                    choices: [
+                        "A group of two adjacent ones/zeros",
+                        "A group of four adjacent ones/zeros",
+                        "A group of eight adjacent ones/zeros",
+                        "A group of sixteen adjacent ones/zeros"
+                    ],
+                    correctAnswer: "A group of eight adjacent ones/zeros",
+                    explanation: "An octet is formed when eight adjacent ones (for SOP) or zeros (for POS) are encircled."
+                },
+                {
+                    question: "What is a \"quad\" in K-map simplification?",
+                    choices: [
+                        "A group of two adjacent ones/zeros",
+                        "A group of four adjacent ones/zeros",
+                        "A group of eight adjacent ones/zeros",
+                        "A group of sixteen adjacent ones/zeros"
+                    ],
+                    correctAnswer: "A group of four adjacent ones/zeros",
+                    explanation: "A quad is formed when four adjacent ones (for SOP) or zeros (for POS) are encircled."
+                },
+                {
+                    question: "What is a \"pair\" in K-map simplification?",
+                    choices: [
+                        "A group of two adjacent ones/zeros",
+                        "A group of four adjacent ones/zeros",
+                        "A group of eight adjacent ones/zeros",
+                        "A group of sixteen adjacent ones/zeros"
+                    ],
+                    correctAnswer: "A group of two adjacent ones/zeros",
+                    explanation: "A pair is formed when two adjacent ones (for SOP) or zeros (for POS) are encircled."
+                },
+                {
+                    question: "Can groups in a K-map overlap?",
+                    choices: [
+                        "No, groups must be distinct and separate.",
+                        "Yes, groups can overlap, meaning a '1' or '0' can be part of more than one group.",
+                        "Only octets can overlap.",
+                        "Only pairs can overlap."
+                    ],
+                    correctAnswer: "Yes, groups can overlap, meaning a '1' or '0' can be part of more than one group.",
+                    explanation: "The groups formed in a K-map can overlap, meaning the same '1' or '0' can be part of multiple encircling groups."
+                },
+                {
+                    question: "What is \"map rolling\" in the context of K-maps?",
+                    choices: [
+                        "Rotating the K-map for easier viewing",
+                        "Connecting the left edges to right edges and top edges to bottom edges to form groups",
+                        "Converting a 2D K-map to a 3D K-map",
+                        "Changing the order of variables in the K-map"
+                    ],
+                    correctAnswer: "Connecting the left edges to right edges and top edges to bottom edges to form groups",
+                    explanation: "Map rolling is a property of K-maps where the edges are considered connected, allowing groups to wrap around the map."
+                },
+                {
+                    question: "When making groups for simplification, which size of group should be identified first?",
+                    choices: [
+                        "Pairs",
+                        "Quads",
+                        "Octets",
+                        "It doesn't matter, any order is fine."
+                    ],
+                    correctAnswer: "Octets",
+                    explanation: "When making groups, the largest possible groups (octets first, then quads, then pairs) should be identified because bigger groups remove more variables."
+                },
+                {
+                    question: "Why should redundant groups be avoided in K-map simplification?",
+                    choices: [
+                        "They make the K-map too complex to read.",
+                        "They lead to a less simplified expression.",
+                        "They are not allowed by K-map rules.",
+                        "They do not affect the simplification."
+                    ],
+                    correctAnswer: "They lead to a less simplified expression.",
+                    explanation: "Redundant groups, which consist of ones or zeros already covered by other groups, should be minimized to achieve the simplest possible expression."
+                },
+                {
+                    question: "If a '1' (in SOP) or '0' (in POS) is not adjacent to any other '1' or '0', how is it treated?",
+                    choices: [
+                        "It is ignored.",
+                        "It is individually circled and cannot be reduced further.",
+                        "It is combined with a \"don't care\" term.",
+                        "The K-map is considered invalid."
+                    ],
+                    correctAnswer: "It is individually circled and cannot be reduced further.",
+                    explanation: "If a '1' or '0' cannot be grouped with any adjacent ones or zeros, it is individually circled, meaning it cannot be further simplified."
+                },
+                {
+                    question: "When writing the reduced expression from a K-map, how are variables that change state within a group treated?",
+                    choices: [
+                        "They are kept in the expression.",
+                        "They are complemented.",
+                        "They are removed from the expression.",
+                        "They are multiplied by 0."
+                    ],
+                    correctAnswer: "They are removed from the expression.",
+                    explanation: "Variables that change state (e.g., from 'a' to 'a bar') within a group are eliminated because their presence doesn't uniquely define the group."
+                },
+                {
+                    question: "In a SOP K-map, if a group consists of cells where variable 'A' changes from 0 to 1, and variable 'B' remains 0, what would be the simplified term for that group?",
+                    choices: [
+                        "A'B'",
+                        "A'",
+                        "B'",
+                        "AB'"
+                    ],
+                    correctAnswer: "B'",
+                    explanation: "Since variable 'A' is changing state (0 to 1), it is eliminated, and variable 'B' remains constant at 0, which in SOP is 'B bar' (B')."
+                },
+                {
+                    question: "For a 3-variable SOP K-map, if a quad covers minterms m0, m1, m2, m3, and variable A changes, B is 0, and C changes, what is the simplified term?",
+                    choices: [
+                        "A'B'C'",
+                        "A'B'",
+                        "B'",
+                        "A'C'"
+                    ],
+                    correctAnswer: "B'",
+                    explanation: "If 'A' and 'C' are changing state within the quad, they are eliminated. If 'B' remains constant at 0, the term is B'."
+                },
+                {
+                    question: "When simplifying a POS expression using a K-map, what is the final step after identifying and writing the reduced expressions for all groups?",
+                    choices: [
+                        "Sum them up",
+                        "Multiply them together",
+                        "Complement them",
+                        "Leave them separate"
+                    ],
+                    correctAnswer: "Multiply them together",
+                    explanation: "For POS expressions, after reducing each group, the final simplified expression is obtained by taking the product of these reduced terms."
+                },
+                {
+                    question: "In a POS K-map, if a pair consists of cells where variable 'A' remains 0, and variable 'B' changes from 0 to 1, what would be the simplified term for that group?",
+                    choices: [
+                        "A",
+                        "A + B",
+                        "A + B'",
+                        "B"
+                    ],
+                    correctAnswer: "A",
+                    explanation: "Since variable 'B' is changing state, it is eliminated. Variable 'A' remains constant at 0, which in POS is represented as 'A'."
+                },
+                {
+                    question: "What is a key difference in the simplification process between SOP and POS K-maps?",
+                    choices: [
+                        "SOP uses 0s for grouping, while POS uses 1s.",
+                        "SOP results in a product of terms, while POS results in a sum of terms.",
+                        "SOP groups '1's, and the final expression is a sum; POS groups '0's, and the final expression is a product.",
+                        "The Gray code is only used in SOP K-maps."
+                    ],
+                    correctAnswer: "SOP groups '1's, and the final expression is a sum; POS groups '0's, and the final expression is a product.",
+                    explanation: "The fundamental difference is that SOP maps involve grouping '1's and result in a sum of product terms, while POS maps involve grouping '0's and result in a product of sum terms."
+                }
+            ],
+            "Sequential Circuits": [
+                {
+                    question: "Which two main types of digital circuits are discussed in the context of day-to-day life applications?",
+                    choices: [
+                        "Analog and Digital circuits",
+                        "Combinational and Sequential circuits",
+                        "Input and Output circuits",
+                        "Power and Logic circuits"
+                    ],
+                    correctAnswer: "Combinational and Sequential circuits",
+                    explanation: "The video states that digital circuits used in daily life consist of both combinational and sequential circuits."
+                },
+                {
+                    question: "What is the defining characteristic of a combinational circuit's output?",
+                    choices: [
+                        "It depends on past inputs only.",
+                        "It depends on present inputs only.",
+                        "It depends on future inputs.",
+                        "It depends on the internal clock signal."
+                    ],
+                    correctAnswer: "It depends on present inputs only.",
+                    explanation: "Combinational circuits are characterized by their output depending solely on their present inputs."
+                },
+                {
+                    question: "Which of the following is given as an example of a combinational circuit?",
+                    choices: [
+                        "Flip-flop",
+                        "Full adder",
+                        "Counter",
+                        "Register"
+                    ],
+                    correctAnswer: "Full adder",
+                    explanation: "The full adder is explicitly mentioned as an example of a combinational circuit, where outputs depend only on current inputs."
+                },
+                {
+                    question: "How does the output of a sequential circuit differ from that of a combinational circuit?",
+                    choices: [
+                        "Sequential circuit output depends only on present inputs.",
+                        "Sequential circuit output depends only on past inputs.",
+                        "Sequential circuit output depends on present inputs and past inputs.",
+                        "Sequential circuit output is always constant."
+                    ],
+                    correctAnswer: "Sequential circuit output depends on present inputs and past inputs.",
+                    explanation: "Unlike combinational circuits, sequential circuits' outputs are a function of both present inputs and past inputs (stored in memory)."
+                },
+                {
+                    question: "What essential component must a sequential circuit have due to its dependence on past inputs?",
+                    choices: [
+                        "A display element",
+                        "A memory element",
+                        "An analog-to-digital converter",
+                        "A power supply unit"
+                    ],
+                    correctAnswer: "A memory element",
+                    explanation: "Since sequential circuits rely on past inputs, they must incorporate a memory element to store that information."
+                },
+                {
+                    question: "In the television channel changing analogy, what represents the input to the sequential circuit?",
+                    choices: [
+                        "The current channel number",
+                        "The television screen",
+                        "The channel up button",
+                        "The remote control battery"
+                    ],
+                    correctAnswer: "The channel up button",
+                    explanation: "Pressing the channel up button acts as the input that triggers a change in the channel, much like an input to a sequential circuit."
+                },
+                {
+                    question: "In the television channel changing analogy, what represents the 'past input' or 'current state' influencing the next channel?",
+                    choices: [
+                        "The volume level",
+                        "The brand of the television",
+                        "The present channel being watched",
+                        "The number of times the button was pressed"
+                    ],
+                    correctAnswer: "The present channel being watched",
+                    explanation: "The next channel depends on the 'present channel,' which functions as the stored past input for the system."
+                },
+                {
+                    question: "What is connected in the feedback path of a typical sequential circuit block diagram?",
+                    choices: [
+                        "An output display",
+                        "A power source",
+                        "Memory elements",
+                        "Another combinational circuit"
+                    ],
+                    correctAnswer: "Memory elements",
+                    explanation: "The block diagram shows memory elements connected in the feedback path, indicating they store and feed back information."
+                },
+                {
+                    question: "What two main types of sequential circuits are mentioned?",
+                    choices: [
+                        "Logic and Arithmetic",
+                        "Wired and Wireless",
+                        "Synchronous and Asynchronous",
+                        "Digital and Analog"
+                    ],
+                    correctAnswer: "Synchronous and Asynchronous",
+                    explanation: "The video introduces synchronous and asynchronous as the two basic types of sequential circuits."
+                },
+                {
+                    question: "How do asynchronous sequential circuits respond to input changes?",
+                    choices: [
+                        "Only at discrete intervals of time.",
+                        "After a long, unpredictable delay.",
+                        "Immediately to the input level change.",
+                        "Only when a clock signal is present."
+                    ],
+                    correctAnswer: "Immediately to the input level change.",
+                    explanation: "Asynchronous circuits are characterized by their immediate response to any change in the input level."
+                },
+                {
+                    question: "What additional input do synchronous sequential circuits have that asynchronous circuits typically do not?",
+                    choices: [
+                        "A power supply",
+                        "A reset button",
+                        "A clock signal",
+                        "An analog input"
+                    ],
+                    correctAnswer: "A clock signal",
+                    explanation: "Synchronous sequential circuits use a clock signal to ensure responses occur only at discrete time intervals."
+                },
+                {
+                    question: "What is a 'clock signal' in digital electronics?",
+                    choices: [
+                        "A constant DC voltage",
+                        "A periodic train of pulses whose value changes between two voltage levels",
+                        "A continuous analog waveform",
+                        "A signal that indicates the current time of day"
+                    ],
+                    correctAnswer: "A periodic train of pulses whose value changes between two voltage levels",
+                    explanation: "A clock signal is described as a periodic train of pulses switching between logic 0 (low voltage) and logic 1 (high voltage)."
+                },
+                {
+                    question: "What is the 'time period' of a clock signal?",
+                    choices: [
+                        "The time for which the signal is high.",
+                        "The time for which the signal is low.",
+                        "The time after which the clock signal repeats itself.",
+                        "The total duration of the circuit operation."
+                    ],
+                    correctAnswer: "The time after which the clock signal repeats itself.",
+                    explanation: "The time period is defined as the duration after which the clock signal's pattern repeats."
+                },
+                {
+                    question: "What is 'on time' of a clock signal?",
+                    choices: [
+                        "The total time period.",
+                        "The time for which the clock signal is high.",
+                        "The time for which the clock signal is low.",
+                        "The time it takes for the signal to transition."
+                    ],
+                    correctAnswer: "The time for which the clock signal is high.",
+                    explanation: "'On time' specifically refers to the duration when the clock signal is at a high voltage level (logic 1)."
+                },
+                {
+                    question: "What is the 'duty cycle' of a clock signal?",
+                    choices: [
+                        "The sum of on time and off time.",
+                        "The difference between on time and off time.",
+                        "The ratio of the on time to the total time period.",
+                        "The frequency of the clock signal."
+                    ],
+                    correctAnswer: "The ratio of the on time to the total time period.",
+                    explanation: "Duty cycle is defined as the ratio of the on time to the total time period, indicating the proportion of time the signal is high."
+                },
+                {
+                    question: "What does a 50% duty cycle for a clock signal imply?",
+                    choices: [
+                        "Its on time is less than its off time.",
+                        "Its on time is greater than its off time.",
+                        "Its on time and off time are equal.",
+                        "The signal is always high."
+                    ],
+                    correctAnswer: "Its on time and off time are equal.",
+                    explanation: "A 50% duty cycle means the clock signal is high for half of its period and low for the other half, making on time and off time equal."
+                },
+                {
+                    question: "What type of synchronous sequential circuit is sensitive to the clock signal's *level*?",
+                    choices: [
+                        "Edge-triggered circuits",
+                        "Positive edge-triggered circuits",
+                        "Negative edge-triggered circuits",
+                        "Level-triggered circuits"
+                    ],
+                    correctAnswer: "Level-triggered circuits",
+                    explanation: "Level-triggered circuits respond to the input when the clock signal is at a certain level, typically when it is high."
+                },
+                {
+                    question: "What type of synchronous sequential circuit responds *only at the clock transition*?",
+                    choices: [
+                        "Level-triggered circuits",
+                        "Edge-triggered circuits",
+                        "On-time sensitive circuits",
+                        "Duty cycle sensitive circuits"
+                    ],
+                    correctAnswer: "Edge-triggered circuits",
+                    explanation: "Edge-triggered circuits are designed to respond only during the transitions (rising or falling edges) of the clock signal."
+                },
+                {
+                    question: "A positive edge-triggered circuit responds to the input when there is what kind of clock transition?",
+                    choices: [
+                        "High to low",
+                        "Low to high",
+                        "Any change in level",
+                        "During the entire high level"
+                    ],
+                    correctAnswer: "Low to high",
+                    explanation: "Positive edge-triggered circuits specifically respond during the transition from a low clock level to a high clock level."
+                },
+                {
+                    question: "A negative edge-triggered circuit responds to the input when there is what kind of clock transition?",
+                    choices: [
+                        "High to low",
+                        "Low to high",
+                        "Any change in level",
+                        "During the entire low level"
+                    ],
+                    correctAnswer: "High to low",
+                    explanation: "Negative edge-triggered circuits respond during the transition from a high clock level to a low clock level."
+                },
+                {
+                    question: "In an edge-triggered sequential circuit, when does the memory element respond to a change in input?",
+                    choices: [
+                        "Continuously throughout the clock's on time.",
+                        "Only at either the rising or the falling edge.",
+                        "Only when the input signal remains constant for a long period.",
+                        "Immediately upon any input change, regardless of the clock."
+                    ],
+                    correctAnswer: "Only at either the rising or the falling edge.",
+                    explanation: "Edge-triggered circuits ensure the memory element updates its state only at the precise moment of a clock edge."
+                },
+                {
+                    question: "What is the implication of a level-triggered circuit responding to input changes *during* the clock's on time?",
+                    choices: [
+                        "It only responds to the first input change.",
+                        "It ignores all input changes during the on time.",
+                        "It responds to multiple input changes that occur during its active clock level.",
+                        "It only responds to input changes when the clock is low."
+                    ],
+                    correctAnswer: "It responds to multiple input changes that occur during its active clock level.",
+                    explanation: "Since it's level-sensitive, a level-triggered circuit will react to any input changes occurring while the clock is at its active level (e.g., high)."
+                },
+                {
+                    question: "What determines the maximum clock frequency in synchronous sequential circuits?",
+                    choices: [
+                        "The number of inputs.",
+                        "The propagation delay of the different logic gates.",
+                        "The size of the memory element.",
+                        "The duty cycle of the clock signal."
+                    ],
+                    correctAnswer: "The propagation delay of the different logic gates.",
+                    explanation: "The propagation delay of the combinational logic within the synchronous circuit dictates the maximum clock frequency to ensure stable input to the memory element."
+                },
+                {
+                    question: "Why should the propagation delay of the combinational circuit be less than the time period of the clock signal in a synchronous circuit?",
+                    choices: [
+                        "To increase power consumption.",
+                        "To prevent the circuit from overheating.",
+                        "To ensure a stable input is available to the memory element when the next clock transition arrives.",
+                        "To make the circuit respond immediately to input changes."
+                    ],
+                    correctAnswer: "To ensure a stable input is available to the memory element when the next clock transition arrives.",
+                    explanation: "This condition is crucial for proper synchronous operation, guaranteeing the memory element receives valid data before it's triggered by the clock."
+                },
+                {
+                    question: "What is identified as the 'essential block' of sequential circuits?",
+                    choices: [
+                        "The input signal",
+                        "The clock signal",
+                        "The memory element",
+                        "The output display"
+                    ],
+                    correctAnswer: "The memory element",
+                    explanation: "The memory element is highlighted as the crucial component because it allows sequential circuits to depend on past inputs."
+                },
+                {
+                    question: "What is described as a 'very basic memory element' that can store one bit of information?",
+                    choices: [
+                        "A resistor",
+                        "A capacitor",
+                        "A flip-flop",
+                        "An inductor"
+                    ],
+                    correctAnswer: "A flip-flop",
+                    explanation: "The flip-flop is introduced as the fundamental building block for storing a single bit of binary information."
+                },
+                {
+                    question: "Flip-flops can be designed with the help of what?",
+                    choices: [
+                        "Microcontrollers",
+                        "Logic gates",
+                        "Sensors",
+                        "Transducers"
+                    ],
+                    correctAnswer: "Logic gates",
+                    explanation: "The video states that flip-flops themselves can be constructed using fundamental logic gates."
+                },
+                {
+                    question: "Which of the following sequential circuits can be built with the help of flip-flops?",
+                    choices: [
+                        "Encoders",
+                        "Decoders",
+                        "Registers and Counters",
+                        "Full adders"
+                    ],
+                    correctAnswer: "Registers and Counters",
+                    explanation: "Registers and counters are given as examples of more complex sequential circuits that are built using flip-flops."
+                },
+                {
+                    question: "The output of a synchronous sequential circuit's memory element is a function of its present input and what else?",
+                    choices: [
+                        "Future inputs",
+                        "The current ambient temperature",
+                        "The past output of this memory element",
+                        "The voltage of the power supply"
+                    ],
+                    correctAnswer: "The past output of this memory element",
+                    explanation: "This emphasizes the feedback nature of sequential circuits, where the current state is influenced by its previous state."
+                },
+                {
+                    question: "In summary, what is the flip-flop considered in relation to sequential circuits?",
+                    choices: [
+                        "An optional component",
+                        "A very basic building block",
+                        "A type of combinational circuit",
+                        "A solely arithmetic component"
+                    ],
+                    correctAnswer: "A very basic building block",
+                    explanation: "The video concludes by reiterating that the flip-flop is the foundational element upon which more complex sequential circuits are constructed."
+                }
+            ],
+            "Quine-McCluskey Algorithm": [
+                {
+                    question: "What is the Quine-McCluskey (QM) Algorithm primarily used for?",
+                    choices: [
+                        "Converting binary to decimal",
+                        "Simplifying Boolean functions to their minimal SOP form",
+                        "Designing analog circuits",
+                        "Performing complex arithmetic operations"
+                    ],
+                    correctAnswer: "Simplifying Boolean functions to their minimal SOP form",
+                    explanation: "The QM Algorithm is a systematic, tabular method for simplifying Boolean functions (combinational logic expressions) to their minimal sum-of-products (SOP) form."
+                },
+                {
+                    question: "What limitation of Karnaugh Maps (K-Maps) does the QM Algorithm address?",
+                    choices: [
+                        "K-Maps are too simple for basic functions.",
+                        "K-Maps are only suitable for POS forms.",
+                        "K-Maps become impractical for functions with 5 or more variables.",
+                        "K-Maps do not ensure a minimal solution."
+                    ],
+                    correctAnswer: "K-Maps become impractical for functions with 5 or more variables.",
+                    explanation: "The QM Algorithm is an alternative to K-Maps, especially useful for functions with more than 5 variables where K-Maps become cumbersome."
+                },
+                {
+                    question: "What is a 'minterm' in the context of Boolean algebra?",
+                    choices: [
+                        "A sum term where all variables appear once.",
+                        "A product term where all variables appear exactly once, true or complemented.",
+                        "Any product term that covers one or more outputs.",
+                        "An output that is not specified."
+                    ],
+                    correctAnswer: "A product term where all variables appear exactly once, true or complemented.",
+                    explanation: "A minterm is a product term in which all variables appear exactly once, either in true or complemented form (e.g., A'BC, XY'Z)."
+                },
+                {
+                    question: "What is an 'implicant'?",
+                    choices: [
+                        "A term that covers no minterms.",
+                        "Any product term that covers one or more minterms of the function.",
+                        "A minterm that cannot be simplified.",
+                        "A term that appears in the final simplified expression."
+                    ],
+                    correctAnswer: "Any product term that covers one or more minterms of the function.",
+                    explanation: "An implicant is defined as any product term that covers one or more minterms of the function."
+                },
+                {
+                    question: "What defines a 'Prime Implicant (PI)'?",
+                    choices: [
+                        "An implicant that can be combined with another to eliminate a literal.",
+                        "An implicant that covers only one minterm.",
+                        "An implicant that cannot be made 'larger' or simpler by combining it with another term.",
+                        "An implicant that is always part of the final minimal solution."
+                    ],
+                    correctAnswer: "An implicant that cannot be made 'larger' or simpler by combining it with another term.",
+                    explanation: "A Prime Implicant is an implicant that cannot be combined with another implicant to eliminate a literal; they are the 'maximal' product terms covering valid minterms."
+                },
+                {
+                    question: "What is an 'Essential Prime Implicant (EPI)'?",
+                    choices: [
+                        "A prime implicant that covers no minterms.",
+                        "A prime implicant that covers at least one minterm that no other PI covers.",
+                        "Any prime implicant selected for the final solution.",
+                        "A prime implicant used only in Petrick's Method."
+                    ],
+                    correctAnswer: "A prime implicant that covers at least one minterm that no other PI covers.",
+                    explanation: "An Essential Prime Implicant is a prime implicant that covers at least one minterm that no other prime implicant covers, making it mandatory for the final minimal solution."
+                },
+                {
+                    question: "How are 'Don't Care' terms (d or X) handled during the *initial combination steps* (Steps 1, 2, 3) of QM?",
+                    choices: [
+                        "They are ignored completely.",
+                        "They are listed as columns to be covered.",
+                        "They are included with regular minterms to help form larger prime implicants.",
+                        "They are treated as mandatory outputs that must be explicitly covered."
+                    ],
+                    correctAnswer: "They are included with regular minterms to help form larger prime implicants.",
+                    explanation: "Don't cares are included in the initial combination process to help form larger prime implicants."
+                },
+                {
+                    question: "What is 'Petrick's Method' used for in the QM Algorithm?",
+                    choices: [
+                        "To identify all prime implicants.",
+                        "To convert minterms to binary.",
+                        "To select the minimal set of non-essential prime implicants to cover remaining minterms.",
+                        "To group minterms by the number of '1's."
+                    ],
+                    correctAnswer: "To select the minimal set of non-essential prime implicants to cover remaining minterms.",
+                    explanation: "Petrick's Method is a systematic algebraic method used to select the minimal set of non-essential prime implicants to cover any remaining minterms not covered by the essential prime implicants."
+                },
+                {
+                    question: "What is the first step in the Quine-McCluskey Algorithm (Minterm List & Grouping)?",
+                    choices: [
+                        "Identify Essential Prime Implicants.",
+                        "Convert all given minterms (and don't cares) to their binary representation.",
+                        "Construct the Prime Implicant Chart.",
+                        "Apply Petrick's Method."
+                    ],
+                    correctAnswer: "Convert all given minterms (and don't cares) to their binary representation.",
+                    explanation: "Step 1 of the QM Algorithm involves expressing all given minterms (and don't cares, if any) in their binary representation."
+                },
+                {
+                    question: "In Step 1 of QM, how are binary minterms grouped?",
+                    choices: [
+                        "By the position of their last '0'.",
+                        "By their decimal value.",
+                        "By the number of '1's in their binary representation.",
+                        "Randomly, then sorted later."
+                    ],
+                    correctAnswer: "By the number of '1's in their binary representation.",
+                    explanation: "Terms are grouped into columns based on the count of '1's in their binary representation."
+                },
+                {
+                    question: "What is the criterion for combining two terms in the 'First Pass Combination' (Step 2)?",
+                    choices: [
+                        "They must have the same number of '1's.",
+                        "They must be identical.",
+                        "They must differ by only one bit position.",
+                        "They must both contain dashes."
+                    ],
+                    correctAnswer: "They must differ by only one bit position.",
+                    explanation: "Terms are combined if they differ by only one bit position, and the differing bit is replaced with a dash ('-')."
+                },
+                {
+                    question: "When two terms are combined in QM, what replaces the differing bit position?",
+                    choices: [
+                        "A '0'",
+                        "A '1'",
+                        "A dash ('-')",
+                        "An 'X'"
+                    ],
+                    correctAnswer: "A dash ('-')",
+                    explanation: "When two terms are combined due to a single bit difference, that differing bit is replaced with a dash ('-')."
+                },
+                {
+                    question: "What happens to the original terms that successfully combined in Step 2 of QM?",
+                    choices: [
+                        "They are kept for the final solution.",
+                        "They are marked (checked off) as they are not prime implicants themselves.",
+                        "They are discarded immediately.",
+                        "They are converted to their decimal equivalents."
+                    ],
+                    correctAnswer: "They are marked (checked off) as they are not prime implicants themselves.",
+                    explanation: "Terms that combine are checked off, indicating they are not prime implicants, as they can be further simplified."
+                },
+                {
+                    question: "In subsequent passes (Step 3) for combining terms, what additional condition must be met besides differing by one bit?",
+                    choices: [
+                        "They must belong to different original groups.",
+                        "They must have the same decimal value.",
+                        "The dashes must be in the exact same positions.",
+                        "They must both be prime implicants."
+                    ],
+                    correctAnswer: "The dashes must be in the exact same positions.",
+                    explanation: "For terms to combine in subsequent passes, not only must they differ by one bit, but any existing dashes must also align in the same positions."
+                },
+                {
+                    question: "How are Prime Implicants (PIs) identified in the QM Algorithm (Step 4)?",
+                    choices: [
+                        "Any term that was checked off in a combination pass.",
+                        "Any term that was NOT checked off in any of the combination passes.",
+                        "Only the terms with the most dashes.",
+                        "Only the original minterms."
+                    ],
+                    correctAnswer: "Any term that was NOT checked off in any of the combination passes.",
+                    explanation: "Prime Implicants are precisely those terms that were unable to combine further and thus remain unchecked after all combination passes."
+                },
+                {
+                    question: "When constructing the Prime Implicant Chart (Step 5), what is listed as columns across the top?",
+                    choices: [
+                        "All identified Prime Implicants.",
+                        "All original minterms (excluding don't cares).",
+                        "All don't care terms.",
+                        "All combined terms from Step 3."
+                    ],
+                    correctAnswer: "All original minterms (excluding don't cares).",
+                    explanation: "The Prime Implicant Chart uses the original minterms (excluding don't cares) as its columns, which need to be covered by the prime implicants."
+                },
+                {
+                    question: "How do you determine if a Prime Implicant (PI) covers a minterm in the chart (Step 5)?",
+                    choices: [
+                        "If their decimal values are the same.",
+                        "If the PI's binary representation has more '1's.",
+                        "If all non-dash bits of the PI match the minterm, and the dash allows any value.",
+                        "If they are adjacent in the original grouping."
+                    ],
+                    correctAnswer: "If all non-dash bits of the PI match the minterm, and the dash allows any value.",
+                    explanation: "A PI covers a minterm if all its defined bits (non-dash) match the corresponding bits in the minterm, with the dash representing a 'don't care' position that matches either 0 or 1."
+                },
+                {
+                    question: "How are Essential Prime Implicants (EPIs) identified in the Prime Implicant Chart (Step 6)?",
+                    choices: [
+                        "By having the most 'X's in their row.",
+                        "By covering all minterms.",
+                        "By being the largest prime implicant.",
+                        "By being the only PI to cover a specific minterm (single 'X' in a column)."
+                    ],
+                    correctAnswer: "By being the only PI to cover a specific minterm (single 'X' in a column).",
+                    explanation: "An EPI is identified when a column (representing a minterm) has only one 'X', indicating that only that specific prime implicant covers that minterm."
+                },
+                {
+                    question: "What is done with Essential Prime Implicants (EPIs) once identified?",
+                    choices: [
+                        "They are discarded.",
+                        "They are included in the solution, and all minterms they cover are considered covered.",
+                        "They are re-combined with other terms.",
+                        "They are used only if Petrick's Method fails."
+                    ],
+                    correctAnswer: "They are included in the solution, and all minterms they cover are considered covered.",
+                    explanation: "EPIs are mandatory for the final minimal solution, and all minterms covered by them are marked as covered."
+                },
+                {
+                    question: "When is Petrick's Method necessary in the QM Algorithm (Step 7)?",
+                    choices: [
+                        "At the very beginning of the algorithm.",
+                        "If all minterms are covered by EPIs.",
+                        "If, after selecting all EPIs, there are still minterms uncovered.",
+                        "To identify prime implicants initially."
+                    ],
+                    correctAnswer: "If, after selecting all EPIs, there are still minterms uncovered.",
+                    explanation: "Petrick's Method is only used as a last resort when some minterms remain uncovered after all Essential Prime Implicants have been selected."
+                },
+                {
+                    question: "How do you formulate the logical expression for Petrick's Method (Step 7)?",
+                    choices: [
+                        "By listing all prime implicants in alphabetical order.",
+                        "For each remaining uncovered minterm, write a product of the PIs that cover it.",
+                        "For each remaining uncovered minterm, write a sum of the PIs that cover it.",
+                        "By taking the complement of all EPIs."
+                    ],
+                    correctAnswer: "For each remaining uncovered minterm, write a sum of the PIs that cover it.",
+                    explanation: "For each minterm that remains uncovered, you write a sum of all the prime implicants that cover that specific minterm."
+                },
+                {
+                    question: "After formulating a product of sum terms in Petrick's Method, what is the next step?",
+                    choices: [
+                        "Identify the largest term.",
+                        "Apply the distributive law to expand the expression.",
+                        "Convert it back to binary.",
+                        "Mark off redundant terms immediately."
+                    ],
+                    correctAnswer: "Apply the distributive law to expand the expression.",
+                    explanation: "Once the product of sum terms is formed, the next step in Petrick's Method is to expand it using the distributive property."
+                },
+                {
+                    question: "In Petrick's Method, how do you select the minimal terms from the expanded expression?",
+                    choices: [
+                        "Identify the product terms that have the most PIs.",
+                        "Identify the product terms that have the fewest PIs, and if tied, the fewest literals.",
+                        "Select only the terms containing dashes.",
+                        "Choose terms that are not covered by any other PIs."
+                    ],
+                    correctAnswer: "Identify the product terms that have the fewest PIs, and if tied, the fewest literals.",
+                    explanation: "The goal of Petrick's Method is to find the most minimal solution, so you select terms with the fewest prime implicants and then the fewest literals if there's a tie."
+                },
+                {
+                    question: "When are 'Don't Care' terms (d or X) *NOT* listed as columns to be covered in the QM Algorithm?",
+                    choices: [
+                        "During initial minterm listing.",
+                        "During the first pass combination.",
+                        "When constructing the Prime Implicant Chart.",
+                        "When identifying Essential Prime Implicants."
+                    ],
+                    correctAnswer: "When constructing the Prime Implicant Chart.",
+                    explanation: "Don't cares are included in the initial combination process but are explicitly excluded from the Prime Implicant Chart columns because they are not mandatory outputs to be covered in the final solution."
+                },
+                {
+                    question: "What is the primary reason 'Don't Care' terms are included in the initial combination steps?",
+                    choices: [
+                        "To make the algorithm more complex.",
+                        "To ensure all minterms are explicitly listed.",
+                        "To help form larger prime implicants.",
+                        "To indicate errors in the Boolean function."
+                    ],
+                    correctAnswer: "To help form larger prime implicants.",
+                    explanation: "Including don't care terms during the combination phases allows for the formation of larger groups (prime implicants), leading to a more simplified final expression."
+                },
+                {
+                    question: "A single error in combining terms or marking checkboxes in the QM algorithm can lead to what?",
+                    choices: [
+                        "A slightly less optimal solution.",
+                        "A correct solution, but with more steps.",
+                        "An incorrect set of prime implicants.",
+                        "No significant impact on the final result."
+                    ],
+                    correctAnswer: "An incorrect set of prime implicants.",
+                    explanation: "The QM algorithm requires meticulous attention to detail, as even a small error can propagate and result in an incorrect set of prime implicants, thus an incorrect final solution."
+                },
+                {
+                    question: "What skill is highlighted as essential for Step 1 of the QM Algorithm?",
+                    choices: [
+                        "Proficiency in drawing K-Maps.",
+                        "Fluency in converting decimal minterms to binary and vice-versa.",
+                        "Understanding of sequential circuits.",
+                        "Ability to perform algebraic simplification quickly."
+                    ],
+                    correctAnswer: "Fluency in converting decimal minterms to binary and vice-versa.",
+                    explanation: "Converting decimal minterms to their binary representation is the very first step, making fluency in this conversion crucial."
+                },
+                {
+                    question: "What is the main advantage of the Quine-McCluskey Algorithm over Boolean algebra for simplification?",
+                    choices: [
+                        "It's faster for functions with few variables.",
+                        "It's a graphical method, making it easier to visualize.",
+                        "It ensures a minimal solution, which Boolean algebra doesn't always guarantee.",
+                        "It doesn't require binary conversion."
+                    ],
+                    correctAnswer: "It ensures a minimal solution, which Boolean algebra doesn't always guarantee.",
+                    explanation: "One of the key benefits of the QM Algorithm is that it systematically guarantees a minimal (most simplified) sum-of-products form, unlike manual Boolean algebra simplification."
+                },
+                {
+                    question: "What is the final step in the QM algorithm after handling remaining minterms with Petrick's Method (if needed)?",
+                    choices: [
+                        "Restart the process from Step 1.",
+                        "Combine the EPIs with the chosen Pls from Petrick's Method to form the final solution.",
+                        "Draw a new K-Map.",
+                        "Verify the solution using a truth table."
+                    ],
+                    correctAnswer: "Combine the EPIs with the chosen Pls from Petrick's Method to form the final solution.",
+                    explanation: "The ultimate goal is to combine the mandatory Essential Prime Implicants with the optimally selected non-essential Prime Implicants (from Petrick's Method) to form the complete minimal solution."
+                },
+                {
+                    question: "The QM algorithm is described as 'suitable for computer programming/automation' due to its:",
+                    choices: [
+                        "Graphical nature.",
+                        "Reliance on human intuition.",
+                        "Systematic nature.",
+                        "High-level abstraction."
+                    ],
+                    correctAnswer: "Systematic nature.",
+                    explanation: "Its step-by-step, rule-based approach makes it well-suited for implementation in computer programs for automated Boolean simplification."
+                }
+            ],
+            "ASM Charts": [
+              {
+                question: "What is an Algorithm State Machine (ASM) chart primarily used to describe?",
+                choices: [
+                  "The behavior of a software application",
+                  "The physical layout of a circuit board",
+                  "The behavior of a sequential circuit or a Finite State Machine (FSM)",
+                  "The power consumption of digital components"
+                ],
+                correctAnswer: "The behavior of a sequential circuit or a Finite State Machine (FSM)",
+                explanation: "An ASM chart is defined as a graphical method used to describe the behavior of sequential circuits or Finite State Machines."
+              },
+              {
+                question: "How does an ASM chart relate to a state diagram?",
+                choices: [
+                  "They are completely unrelated methods.",
+                  "An ASM chart is an older, less preferred version of a state diagram.",
+                  "An ASM chart is equivalent to a state diagram but is often preferred in digital design.",
+                  "A state diagram is a component within an ASM chart."
+                ],
+                correctAnswer: "An ASM chart is equivalent to a state diagram but is often preferred in digital design.",
+                explanation: "The document states that an ASM chart is equivalent to a state diagram but is favored for its descriptiveness and clearer path to hardware implementation."
+              },
+              {
+                question: "Why is an ASM chart often preferred over a state diagram in digital design?",
+                choices: [
+                  "It is simpler and less descriptive.",
+                  "It provides a clearer path from a design concept to the final hardware implementation.",
+                  "It visually organizes the design into linear, non-modular blocks.",
+                  "It only shows the sequence of events without timing relationships."
+                ],
+                correctAnswer: "It provides a clearer path from a design concept to the final hardware implementation.",
+                explanation: "ASM charts are preferred because they offer a more descriptive and understandable way to transition from a design concept to hardware."
+              },
+              {
+                question: "What is the fundamental distinction regarding 'Timing' between a Software Flowchart and an ASM Chart?",
+                choices: [
+                  "Software flowcharts are tied to clock cycles, while ASM charts are not.",
+                  "ASM charts are fundamentally tied to timing via clock cycles, unlike flowcharts.",
+                  "Both have no inherent concept of time.",
+                  "Software flowcharts show timing, but ASM charts do not."
+                ],
+                correctAnswer: "ASM charts are fundamentally tied to timing via clock cycles, unlike flowcharts.",
+                explanation: "This is highlighted as a core difference, with ASM charts explicitly modeling transitions on clock edges and each state representing one clock cycle."
+              },
+              {
+                question: "A Software Flowchart is a tool for programming, whereas an ASM chart is a tool for what?",
+                choices: [
+                  "Software debugging.",
+                  "Hardware testing.",
+                  "Digital design for a synchronous digital system.",
+                  "Analog circuit simulation."
+                ],
+                correctAnswer: "Digital design for a synchronous digital system.",
+                explanation: "The document clearly contrasts the purpose, stating that an ASM chart represents a hardware algorithm for synchronous digital systems."
+              },
+              {
+                question: "How does the 'Structure' of an ASM chart differ from a Software Flowchart?",
+                choices: [
+                  "A flowchart describes the behavior of an FSM, while an ASM chart shows computational steps.",
+                  "An ASM chart describes the behavior of an FSM, detailing states and transitions, while a flowchart shows computational steps.",
+                  "Both primarily show the flow of computational steps and decisions.",
+                  "Flowcharts represent hardware, while ASM charts represent software."
+                ],
+                correctAnswer: "An ASM chart describes the behavior of an FSM, detailing states and transitions, while a flowchart shows computational steps.",
+                explanation: "The ASM chart directly models an FSM's states and transitions, whereas a flowchart focuses on the sequence of computational steps."
+              },
+              {
+                question: "What is the symbol used to represent a State Box in an ASM chart?",
+                choices: [
+                  "A diamond",
+                  "An oval",
+                  "A rectangle",
+                  "A circle"
+                ],
+                correctAnswer: "A rectangle",
+                explanation: "The document explicitly states that the State Box symbol is a rectangle."
+              },
+              {
+                question: "What is the purpose of a State Box in an ASM chart?",
+                choices: [
+                  "To test an input condition.",
+                  "To represent a single state of the FSM for one clock cycle.",
+                  "To generate a conditional output.",
+                  "To indicate an error in the design."
+                ],
+                correctAnswer: "To represent a single state of the FSM for one clock cycle.",
+                explanation: "A State Box represents a single state where the machine resides for the duration of one clock cycle."
+              },
+              {
+                question: "What type of outputs are typically contained within a State Box?",
+                choices: [
+                  "Mealy-type outputs",
+                  "Conditional outputs",
+                  "Moore-type outputs",
+                  "Input signals"
+                ],
+                correctAnswer: "Moore-type outputs",
+                explanation: "Moore-type outputs, which depend only on the current state, are written inside the State Box."
+              },
+              {
+                question: "What is the symbol used for a Decision Box in an ASM chart?",
+                choices: [
+                  "A rectangle",
+                  "An oval",
+                  "A diamond",
+                  "A square"
+                ],
+                correctAnswer: "A diamond",
+                explanation: "The Decision Box is represented by a diamond symbol."
+              },
+              {
+                question: "What is the purpose of a Decision Box?",
+                choices: [
+                  "To define the machine's status for one clock cycle.",
+                  "To generate an output based solely on the current state.",
+                  "To test an input condition to decide the machine's next state or if a conditional output should be generated.",
+                  "To connect two different ASM blocks."
+                ],
+                correctAnswer: "To test an input condition to decide the machine's next state or if a conditional output should be generated.",
+                explanation: "A Decision Box's role is to evaluate an input condition to determine the flow of the machine."
+              },
+              {
+                question: "How many entry and exit paths does a Decision Box have?",
+                choices: [
+                  "One entry, one exit",
+                  "Two entries, one exit",
+                  "One entry, two exits",
+                  "Two entries, two exits"
+                ],
+                correctAnswer: "One entry, two exits",
+                explanation: "A Decision Box is characterized by having one entry path and two exit paths, labeled 1 (True) and 0 (False)."
+              },
+              {
+                question: "What type of output is represented by a Conditional Output Box?",
+                choices: [
+                  "Moore-type output",
+                  "Always active output",
+                  "Mealy-type output",
+                  "Input-only output"
+                ],
+                correctAnswer: "Mealy-type output",
+                explanation: "The Conditional Output Box is specifically used to represent a Mealy-type output."
+              },
+              {
+                question: "When is a Mealy-type output generated from a Conditional Output Box?",
+                choices: [
+                  "Only when the machine enters a specific state.",
+                  "Only if a specific input condition is true, regardless of the state.",
+                  "Only if the machine is in a specific state AND the input condition leading to it is true.",
+                  "After two full clock cycles."
+                ],
+                correctAnswer: "Only if the machine is in a specific state AND the input condition leading to it is true.",
+                explanation: "Mealy outputs are conditional on both the current state and the current input."
+              },
+              {
+                question: "What is the fundamental structure that encapsulates everything that happens within one state during a single clock cycle?",
+                choices: [
+                  "A State Diagram",
+                  "A Software Flowchart",
+                  "An ASM Block",
+                  "A Flip-flop"
+                ],
+                correctAnswer: "An ASM Block",
+                explanation: "An ASM Block is defined as the fundamental structure that contains a State Box and all associated Decision and Conditional Output Boxes for one clock cycle."
+              },
+              {
+                question: "How many entry points does an ASM Block have?",
+                choices: [
+                  "Zero",
+                  "One",
+                  "Two",
+                  "Multiple"
+                ],
+                correctAnswer: "One",
+                explanation: "The diagram and text clearly state that an ASM Block has a single entry point."
+              },
+              {
+                question: "How many exit paths can an ASM Block have?",
+                choices: [
+                  "Exactly one",
+                  "Exactly two",
+                  "Multiple",
+                  "Zero"
+                ],
+                correctAnswer: "Multiple",
+                explanation: "While an ASM block has a single entry, it can have multiple exit paths, each leading to a next state."
+              },
+              {
+                question: "In the Binary Counter example (Moore Machine), why are the outputs A and B considered Moore-type outputs?",
+                choices: [
+                  "They depend on an external input X.",
+                  "They depend only on the current state.",
+                  "They are active only for half a clock cycle.",
+                  "They are always 0."
+                ],
+                correctAnswer: "They depend only on the current state.",
+                explanation: "The analysis of the Moore machine example explicitly states that the outputs A and B depend only on the current state, which is characteristic of Moore outputs."
+              },
+              {
+                question: "Why does the Binary Counter ASM chart, as a Moore Machine, have no Decision Boxes?",
+                choices: [
+                  "Because it has multiple inputs.",
+                  "Because the outputs are always 1.",
+                  "Because there are no inputs controlling the state transitions.",
+                  "Because it's a synchronous circuit."
+                ],
+                correctAnswer: "Because there are no inputs controlling the state transitions.",
+                explanation: "The analysis notes that since the outputs depend only on the state and there are no external inputs controlling transitions, Decision Boxes are not needed."
+              },
+              {
+                question: "In the Sequence Detector '101' example, why is the output Z considered a Mealy-type output?",
+                choices: [
+                  "It is always active in State S2.",
+                  "It depends only on the input X.",
+                  "It depends on being in state S2 AND receiving an input X=1.",
+                  "It is independent of both state and input."
+                ],
+                correctAnswer: "It depends on being in state S2 AND receiving an input X=1.",
+                explanation: "The analysis for this example shows that the output Z is conditional on both the state (S2) and a specific input (X=1), making it a Mealy output."
+              },
+              {
+                question: "What is a critical rule regarding exit paths from an ASM block for any possible combination of inputs?",
+                choices: [
+                  "There can be zero exit paths.",
+                  "There must be exactly one unique exit path.",
+                  "There can be multiple exit paths, but only one is active at a time.",
+                  "The number of exit paths must equal the number of inputs."
+                ],
+                correctAnswer: "There must be exactly one unique exit path.",
+                explanation: "This rule ensures there is no ambiguity about the machine's next state given any input combination."
+              },
+              {
+                question: "All paths in an ASM chart must eventually lead to what?",
+                choices: [
+                  "A decision box.",
+                  "A conditional output box.",
+                  "A state box (the next state).",
+                  "A loop back to the beginning of the block."
+                ],
+                correctAnswer: "A state box (the next state).",
+                explanation: "This rule ensures proper state transitions and prevents paths from terminating unexpectedly within the diagram."
+              },
+              {
+                question: "What type of path is strictly forbidden within the same ASM block according to the rules?",
+                choices: [
+                  "A path leading to a next state.",
+                  "A path that branches to a conditional output box.",
+                  "A path that loops back to a decision box.",
+                  "A path that exits the block."
+                ],
+                correctAnswer: "A path that loops back to a decision box.",
+                explanation: "The rule 'No Feedback within a Block' specifies that a path cannot loop back to a decision box within the same ASM block."
+              },
+              {
+                question: "Why is an ASM chart more suitable for designing digital hardware than a flowchart?",
+                choices: [
+                  "It represents software algorithms more accurately.",
+                  "It lacks the concept of timing, making it simpler.",
+                  "It directly models the behavior of an FSM and incorporates clock cycles.",
+                  "It is primarily for asynchronous digital circuits."
+                ],
+                correctAnswer: "It directly models the behavior of an FSM and incorporates clock cycles.",
+                explanation: "ASM charts are designed specifically for hardware, directly modeling FSMs and incorporating essential timing concepts like clock cycles."
+              },
+              {
+                question: "What does 'Each state represents one clock cycle' signify in an ASM chart?",
+                choices: [
+                  "The circuit is asynchronous.",
+                  "The duration of execution for each step is variable.",
+                  "The timing synchronization of the hardware over discrete time intervals.",
+                  "The chart can only be used for very slow systems."
+                ],
+                correctAnswer: "The timing synchronization of the hardware over discrete time intervals.",
+                explanation: "This statement underscores the fundamental tie of ASM charts to timing, where each state represents a fixed period determined by the clock."
+              },
+              {
+                question: "If an output depends only on the current state, what type of output is it and where is it shown on an ASM chart?",
+                choices: [
+                  "Mealy output, shown in a Conditional Output Box.",
+                  "Moore output, shown in a Decision Box.",
+                  "Moore output, written inside the State Box.",
+                  "Mealy output, shown next to the entry path."
+                ],
+                correctAnswer: "Moore output, written inside the State Box.",
+                explanation: "Moore outputs are defined as depending only on the current state and are explicitly contained within the State Box."
+              },
+              {
+                question: "If an output is active only under a specific input condition while in a certain state, what type of output is it and where is it represented?",
+                choices: [
+                  "Moore output, in the State Box.",
+                  "Mealy output, in a Conditional Output Box.",
+                  "Moore output, as an arrow.",
+                  "Sequential output, in a Decision Box."
+                ],
+                correctAnswer: "Mealy output, in a Conditional Output Box.",
+                explanation: "Mealy outputs are conditional on both state and input and are represented by the Conditional Output Box."
+              },
+              {
+                question: "What does the ASM chart visually organize a digital design into?",
+                choices: [
+                  "A linear sequence of instructions.",
+                  "Modular blocks.",
+                  "A single, monolithic structure.",
+                  "Abstract mathematical equations."
+                ],
+                correctAnswer: "Modular blocks.",
+                explanation: "The document mentions that ASM charts visually organize the design into modular blocks, which is helpful for complex systems."
+              },
+              {
+                question: "What is the core reason for the distinction between a software flowchart and an ASM chart?",
+                choices: [
+                  "Their visual appearance.",
+                  "The language they are written in.",
+                  "Their fundamental purpose for software vs. hardware design.",
+                  "The number of variables they can handle."
+                ],
+                correctAnswer: "Their fundamental purpose for software vs. hardware design.",
+                explanation: "The document emphasizes that the core difference lies in their purpose: software algorithms for flowcharts and hardware algorithms for ASM charts."
+              },
+              {
+                question: "For which type of systems is the visual organization into modular blocks by ASM charts particularly helpful?",
+                choices: [
+                  "Very simple systems with few components.",
+                  "Systems that only perform arithmetic operations.",
+                  "Complex systems.",
+                  "Analog systems."
+                ],
+                correctAnswer: "Complex systems.",
+                explanation: "The modular organization provided by ASM charts is explicitly stated to be helpful for complex systems."
+              }
+            ]
+          };
+
+        // State variables for quiz management
+        let activeTab = "K-Map Simplification"; // Default active tab
+        let currentQuestionIndex = 0; // Tracks the current question for the active tab
+        let score = 0; // Tracks the user's score for the active tab
+        let showResults = false; // Controls whether results are shown for the active tab
+        let selectedAnswer = null; // Stores the user's selected answer for the current question
+        let feedback = ''; // Provides feedback (correct/incorrect)
+        let showExplanation = false; // Controls visibility of the explanation
+
+        // DOM elements
+        let quizContentDiv;
+        let tabNavigationDiv;
+
+        // Function to render the quiz UI based on current state
+        function renderQuiz() {
+            if (!quizContentDiv || !tabNavigationDiv) {
+                console.error("DOM elements not found. Cannot render quiz.");
+                return;
+            }
+
+            const currentQuizQuestions = quizzes[activeTab];
+            const currentQuestion = currentQuizQuestions[currentQuestionIndex];
+
+            // Render Tab Navigation
+            tabNavigationDiv.innerHTML = ''; // Clear previous tabs
+            Object.keys(quizzes).forEach(tabName => {
+                const button = document.createElement('button');
+                button.textContent = tabName;
+                button.className = `
+                    px-6 py-3 rounded-lg text-lg font-semibold
+                    transition-colors duration-200 ease-in-out
+                    ${activeTab === tabName ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}
+                    transform hover:scale-105 active:scale-95 mb-2 md:mb-0
+                `;
+                button.onclick = () => handleTabClick(tabName);
+                tabNavigationDiv.appendChild(button);
+            });
+
+            // Render Quiz Content
+            let contentHtml = '';
+
+            if (showResults) {
+                // Results screen
+                contentHtml = `
+                    <div class="text-center">
+                        <h2 class="text-3xl font-semibold text-gray-700 mb-4">Quiz Completed!</h2>
+                        <p class="text-xl text-gray-600 mb-6">
+                            Your final score for the "${activeTab}" quiz is <span class="font-extrabold text-blue-600 text-3xl">${score}</span> out of <span class="font-extrabold text-purple-600 text-3xl">${currentQuizQuestions.length}</span>.
+                        </p>
+                        <button id="restart-quiz-button" class="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">
+                            Restart Quiz
+                        </button>
+                    </div>
+                `;
+            } else {
+                // Question display area
+                contentHtml = `
+                    <div>
+                        <div class="text-lg text-gray-600 mb-6 text-center">
+                            Question ${currentQuestionIndex + 1} of ${currentQuizQuestions.length}
+                        </div>
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6 leading-relaxed">
+                            ${currentQuestion.question}
+                        </h2>
+                        <div id="choices-container" class="grid grid-cols-1 gap-4 mb-6">
+                            <!-- Choices will be appended here by JS -->
+                        </div>
+                        <div id="feedback-container">
+                            <!-- Feedback will be rendered here by JS -->
+                        </div>
+                        <div class="mt-8 text-center">
+                            <button id="next-question-button" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 ${selectedAnswer === null ? 'opacity-60 cursor-not-allowed' : ''}" ${selectedAnswer === null ? 'disabled' : ''}>
+                                ${currentQuestionIndex === currentQuizQuestions.length - 1 ? 'View Results' : 'Next Question'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            quizContentDiv.innerHTML = contentHtml;
+
+            // Add event listeners after rendering HTML
+            if (!showResults) {
+                const choicesContainer = document.getElementById('choices-container');
+                currentQuestion.choices.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.textContent = choice;
+                    button.className = `
+                        w-full py-3 px-5 text-left rounded-lg border-2
+                        transition-all duration-200 ease-in-out
+                        ${selectedAnswer === choice
+                            ? (choice === currentQuestion.correctAnswer ? 'bg-green-100 border-green-500 text-green-800 shadow-md' : 'bg-red-100 border-red-500 text-red-800 shadow-md')
+                            : 'bg-white border-gray-300 text-gray-700 hover:bg-blue-50 hover:border-blue-400'
+                        }
+                        ${selectedAnswer !== null && selectedAnswer !== choice && choice === currentQuestion.correctAnswer ? 'border-dashed border-green-500 bg-green-50 text-green-700' : ''}
+                        ${selectedAnswer !== null ? 'cursor-not-allowed' : 'cursor-pointer'}
+                        focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-75
+                    `;
+                    button.disabled = selectedAnswer !== null; // Disable buttons after selection
+                    button.onclick = () => handleAnswerClick(choice);
+                    choicesContainer.appendChild(button);
+                });
+
+                const nextButton = document.getElementById('next-question-button');
+                if (nextButton) {
+                    nextButton.onclick = handleNextQuestion;
+                }
+
+                // Render feedback if available
+                const feedbackContainer = document.getElementById('feedback-container');
+                if (feedback && feedbackContainer) {
+                    feedbackContainer.innerHTML = `
+                        <div class="mt-6 p-4 rounded-lg shadow-inner ${feedback.includes('Correct') ? 'bg-green-50 border border-green-300 text-green-700' : 'bg-red-50 border border-red-300 text-red-700'}">
+                            <p class="font-semibold mb-2">${feedback}</p>
+                            ${showExplanation ? `<p class="text-sm"><span class="font-bold">Explanation:</span> ${currentQuestion.explanation}</p>` : ''}
+                        </div>
+                    `;
+                }
+
+            } else {
+                const restartButton = document.getElementById('restart-quiz-button');
+                if (restartButton) {
+                    restartButton.onclick = handleRestartQuiz;
+                }
+            }
+        }
+
+        // Handler for when an answer choice is clicked
+        function handleAnswerClick(choice) {
+            // If an answer has already been selected, prevent re-selection
+            if (selectedAnswer !== null) {
+                return;
+            }
+
+            selectedAnswer = choice; // Set the user's selected answer
+            const currentQuizQuestions = quizzes[activeTab];
+            const currentQuestion = currentQuizQuestions[currentQuestionIndex];
+            const isCorrect = choice === currentQuestion.correctAnswer; // Check if it's correct
+
+            if (isCorrect) {
+                score++; // Increment score if correct
+                feedback = 'Correct!'; // Set correct feedback
+            } else {
+                feedback = 'Incorrect. The correct answer is:'; // Set incorrect feedback
+            }
+            showExplanation = true; // Show the explanation after an answer is chosen
+
+            renderQuiz(); // Re-render the quiz to show feedback and disabled choices
+        }
+
+        // Handler for advancing to the next question
+        function handleNextQuestion() {
+            // Reset feedback and selected answer for the next question
+            selectedAnswer = null;
+            feedback = '';
+            showExplanation = false;
+
+            const currentQuizQuestions = quizzes[activeTab];
+            // Check if there are more questions in the current quiz
+            if (currentQuestionIndex < currentQuizQuestions.length - 1) {
+                currentQuestionIndex++; // Move to the next question
+                renderQuiz(); // Re-render the quiz for the next question
+            } else {
+                showResults = true; // If no more questions, show results
+                renderQuiz(); // Re-render to show results screen
+            }
+        }
+
+        // Handler for restarting the quiz
+        function handleRestartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            showResults = false;
+            selectedAnswer = null;
+            feedback = '';
+            showExplanation = false;
+            renderQuiz(); // Re-render to show the first question
+        }
+
+        // Handler for switching between quiz tabs
+        function handleTabClick(tabName) {
+            activeTab = tabName;
+            // Reset all quiz-related states when switching tabs
+            currentQuestionIndex = 0;
+            score = 0;
+            showResults = false;
+            selectedAnswer = null;
+            feedback = '';
+            showExplanation = false;
+            renderQuiz(); // Re-render for the new tab
+        }
+
+        // Initialize quiz when the window loads
+        window.onload = () => {
+            quizContentDiv = document.getElementById('quiz-content');
+            tabNavigationDiv = document.getElementById('tab-navigation');
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
